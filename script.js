@@ -1,222 +1,189 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ===== DETECT TOUCH DEVICE =====
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    // ===== CUSTOM CURSOR (Desktop Only) =====
+    // CURSOR (Desktop)
     if (!isTouch) {
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
-
         if (cursor && follower) {
-            let mouseX = 0, mouseY = 0;
-            let followerX = 0, followerY = 0;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                cursor.style.transform = `translate(${mouseX - 10}px, ${mouseY - 10}px)`;
+            let mx = 0, my = 0, fx = 0, fy = 0;
+            document.addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                cursor.style.transform = `translate(${mx-10}px,${my-10}px)`;
             });
-
-            // Smooth follower with RAF
-            function animateFollower() {
-                followerX += (mouseX - followerX) * 0.15;
-                followerY += (mouseY - followerY) * 0.15;
-                follower.style.transform = `translate(${followerX - 3}px, ${followerY - 3}px)`;
-                requestAnimationFrame(animateFollower);
-            }
-            animateFollower();
-
-            // Hover effect
-            document.querySelectorAll('a, button, .product-card, .cart-toggle').forEach(el => {
+            (function anim() {
+                fx += (mx-fx)*.15; fy += (my-fy)*.15;
+                follower.style.transform = `translate(${fx-3}px,${fy-3}px)`;
+                requestAnimationFrame(anim);
+            })();
+            document.querySelectorAll('a,button,.product-card,.cart-toggle,.faq-question').forEach(el => {
                 el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
                 el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
             });
-
-            // Magnetic buttons
             document.querySelectorAll('.btn-magnetic').forEach(btn => {
-                btn.addEventListener('mousemove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+                btn.addEventListener('mousemove', e => {
+                    const r = btn.getBoundingClientRect();
+                    btn.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.15}px,${(e.clientY-r.top-r.height/2)*.15}px)`;
                 });
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = 'translate(0, 0)';
-                });
+                btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0,0)');
             });
         }
     }
 
-    // ===== LOADER =====
+    // LOADER
     const loader = document.getElementById('loader');
     if (loader) {
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 600);
-            }, 800);
-        });
-        // Fallback: hide loader after 3s no matter what
-        setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 600);
-        }, 3000);
+        const hide = () => { loader.style.opacity='0'; setTimeout(()=>loader.style.display='none',600); };
+        window.addEventListener('load', () => setTimeout(hide, 800));
+        setTimeout(hide, 3000);
     }
 
-    // ===== HAMBURGER MENU =====
+    // HAMBURGER
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-
     if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-        });
-
-        // Close menu when clicking a link
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => navLinks.classList.remove('open'));
-        });
+        menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('open')));
     }
 
-    // ===== LAZY LOAD =====
-    document.querySelectorAll('img').forEach(img => {
-        if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+    // LAZY LOAD
+    document.querySelectorAll('img').forEach(img => { if (!img.hasAttribute('loading')) img.setAttribute('loading','lazy'); });
+
+    // REVEAL
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.section,.product-card,.story-section,.atelier,.reveal-item,.timeline-step,.testimonial-card,.lookbook-item').forEach(el => {
+        if (!el.classList.contains('reveal-item')) el.classList.add('reveal-item');
+        obs.observe(el);
     });
 
-    // ===== REVEAL ON SCROLL =====
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
+    // PARTICLES
+    const canvas = document.getElementById('particles-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+        resize(); window.addEventListener('resize', resize);
+        for (let i = 0; i < 60; i++) {
+            particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2+.5, dx: (Math.random()-.5)*.3, dy: (Math.random()-.5)*.3, o: Math.random()*.5+.2 });
+        }
+        function drawParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+                ctx.fillStyle = `rgba(212,175,55,${p.o})`;
+                ctx.fill();
+                p.x += p.dx; p.y += p.dy;
+                if (p.x<0||p.x>canvas.width) p.dx *= -1;
+                if (p.y<0||p.y>canvas.height) p.dy *= -1;
+            });
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+    }
+
+    // COUNTERS
+    const counters = document.querySelectorAll('.counter-number');
+    let counted = false;
+    const counterObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting && !counted) {
+                counted = true;
+                counters.forEach(c => {
+                    const target = +c.dataset.target;
+                    let current = 0;
+                    const step = target / 60;
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) { c.textContent = target; clearInterval(timer); }
+                        else c.textContent = Math.ceil(current);
+                    }, 30);
+                });
             }
         });
-    }, { threshold: 0.05 });
+    }, { threshold: 0.3 });
+    if (counters.length) counterObs.observe(counters[0].closest('.hero-counters'));
 
-    document.querySelectorAll('.section, .product-card, .story-section, .atelier, .reveal-item').forEach(el => {
-        if (!el.classList.contains('reveal-item')) el.classList.add('reveal-item');
-        revealObserver.observe(el);
+    // FAQ
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.parentElement;
+            document.querySelectorAll('.faq-item').forEach(i => { if (i !== item) i.classList.remove('active'); });
+            item.classList.toggle('active');
+        });
     });
 
-    // ===== CART LOGIC =====
+    // SIZE SELECTOR
+    document.querySelectorAll('.size-selector').forEach(sel => {
+        sel.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sel.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    });
+
+    // CART
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const cartSidebar = document.querySelector('.cart-sidebar');
     const cartOverlay = document.querySelector('.cart-overlay');
-
-    function openCart() {
-        cartSidebar?.classList.add('active');
-        cartOverlay?.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeCartFn() {
-        cartSidebar?.classList.remove('active');
-        cartOverlay?.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+    function openCart() { cartSidebar?.classList.add('active'); cartOverlay?.classList.add('active'); document.body.style.overflow='hidden'; }
+    function closeCartFn() { cartSidebar?.classList.remove('active'); cartOverlay?.classList.remove('active'); document.body.style.overflow=''; }
 
     function updateCartUI() {
         document.querySelectorAll('.cart-count').forEach(el => el.textContent = cart.length);
-
-        const cartItemsList = document.querySelector('.cart-items-list');
-        const cartTotal = document.querySelector('.cart-total-value');
-
-        if (cartItemsList) {
-            cartItemsList.innerHTML = '';
-            let total = 0;
-
-            if (cart.length === 0) {
-                cartItemsList.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px 0;">Carrinho vazio</p>';
-            }
-
-            cart.forEach((item, index) => {
-                total += item.price;
-                const div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" width="50" height="50">
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <p>R$ ${item.price.toFixed(2).replace('.', ',')}</p>
-                    </div>
-                    <button class="remove-item" data-index="${index}">&times;</button>
-                `;
-                cartItemsList.appendChild(div);
-            });
-
-            if (cartTotal) cartTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-
-            // Remove item listeners
-            cartItemsList.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    cart.splice(parseInt(btn.dataset.index), 1);
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateCartUI();
-                });
-            });
-        }
+        const list = document.querySelector('.cart-items-list');
+        const total = document.querySelector('.cart-total-value');
+        if (!list) return;
+        list.innerHTML = '';
+        let sum = 0;
+        if (!cart.length) list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:30px 0">Carrinho vazio</p>';
+        cart.forEach((item, i) => {
+            sum += item.price;
+            const d = document.createElement('div');
+            d.className = 'cart-item';
+            d.innerHTML = `<img src="${item.image}" alt="${item.name}" width="50" height="50"><div class="cart-item-info"><h4>${item.name}${item.size ? ' - '+item.size : ''}</h4><p>R$ ${item.price.toFixed(2).replace('.',',')}</p></div><button class="remove-item" data-index="${i}">&times;</button>`;
+            list.appendChild(d);
+        });
+        if (total) total.textContent = `R$ ${sum.toFixed(2).replace('.',',')}`;
+        list.querySelectorAll('.remove-item').forEach(btn => {
+            btn.addEventListener('click', () => { cart.splice(+btn.dataset.index,1); localStorage.setItem('cart',JSON.stringify(cart)); updateCartUI(); });
+        });
     }
 
-    // Add to Cart buttons
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', () => {
-            cart.push({
-                name: btn.dataset.name,
-                price: parseFloat(btn.dataset.price),
-                image: btn.dataset.image
-            });
+            const sizeEl = btn.parentElement.querySelector('.size-btn.active');
+            cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartUI();
-
-            // Feedback
-            const original = btn.textContent;
-            btn.textContent = '✓ Adicionado!';
-            btn.style.background = 'var(--accent)';
-            btn.style.borderColor = 'var(--accent)';
-            btn.style.color = '#000';
-            setTimeout(() => {
-                btn.textContent = original;
-                btn.style.background = '';
-                btn.style.borderColor = '';
-                btn.style.color = '';
-            }, 1500);
+            const orig = btn.textContent;
+            btn.textContent = '✓ Adicionado!'; btn.style.background='var(--accent)'; btn.style.borderColor='var(--accent)'; btn.style.color='#000';
+            setTimeout(() => { btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 1500);
         });
     });
 
-    // WhatsApp Checkout
     const checkoutBtn = document.querySelector('.checkout-whatsapp');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            if (cart.length === 0) return;
-
+            if (!cart.length) return;
             let msg = "Olá! Gostaria de fazer um pedido:\n\n";
-            let total = 0;
-            cart.forEach(item => {
-                msg += `• ${item.name} — R$ ${item.price.toFixed(2).replace('.', ',')}\n`;
-                total += item.price;
-            });
-            msg += `\n*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
-            msg += "\n\nComo posso prosseguir com o pagamento e entrega?";
-
+            let sum = 0;
+            cart.forEach(item => { msg += `• ${item.name}${item.size?' ('+item.size+')':''}  — R$ ${item.price.toFixed(2).replace('.',',')}\n`; sum += item.price; });
+            msg += `\n*Total: R$ ${sum.toFixed(2).replace('.',',')}*\n\nComo posso prosseguir?`;
             window.open(`https://wa.me/5500000000000?text=${encodeURIComponent(msg)}`, '_blank');
         });
     }
 
-    // Cart toggle
-    document.querySelectorAll('.cart-toggle').forEach(el => {
-        el.addEventListener('click', openCart);
-    });
+    document.querySelectorAll('.cart-toggle').forEach(el => el.addEventListener('click', openCart));
     document.querySelector('.close-cart')?.addEventListener('click', closeCartFn);
     cartOverlay?.addEventListener('click', closeCartFn);
-
     updateCartUI();
 
-    // ===== SMOOTH SCROLL =====
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) target.scrollIntoView({ behavior: 'smooth' });
-        });
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({behavior:'smooth'}); });
     });
 });

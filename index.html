@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roupa de Terreiro | Ateliê Sagrado</title>
-    <meta name="description" content="Peças exclusivas, de alta qualidade e durabilidade para o seu sagrado. Pronta entrega e sob medida.">
+    <meta name="description" content="Peças exclusivas de alta qualidade para o seu sagrado. Pronta entrega e sob medida. Veste com Fé.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
 
+    <!-- LOADER -->
     <div id="loader">
         <div class="loader-content">
             <img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Carregando..." class="loader-logo">
         </div>
     </div>
 
+    <!-- NAVIGATION -->
     <nav id="navbar">
         <div class="nav-logo">
             <img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Roupa de Terreiro">
@@ -27,7 +29,8 @@
         <div class="nav-links">
             <a href="#home">Início</a>
             <a href="catalog.html">Catálogo</a>
-            <a href="#atelier">Sob Medida</a>
+            <a href="#como-funciona">Sob Medida</a>
+            <a href="#faq">Dúvidas</a>
             <div class="cart-toggle">
                 <span>Carrinho</span>
                 <span class="cart-count">0</span>
@@ -36,41 +39,62 @@
     </nav>
 
     <main>
+        <!-- ===== HERO WITH PARTICLES ===== -->
         <section id="home" class="hero">
+            <canvas id="particles-canvas"></canvas>
             <div class="hero-bg-container">
                 <div class="hero-bg" style="background-image: url('hero.png');"></div>
             </div>
             <div class="hero-content">
-                <h1>Veste <span>com Fé</span></h1>
+                <h1 class="hero-title">Veste <span>com Fé</span></h1>
                 <p>Arte, tradição e alta costura para o seu sagrado. Cada peça é uma celebração da identidade e resistência.</p>
                 <a href="catalog.html" class="btn-magnetic">Explorar Coleção</a>
             </div>
+            <!-- COUNTERS -->
+            <div class="hero-counters">
+                <div class="counter-item">
+                    <span class="counter-number" data-target="500">0</span><span>+</span>
+                    <p>Peças Entregues</p>
+                </div>
+                <div class="counter-item">
+                    <span class="counter-number" data-target="150">0</span><span>+</span>
+                    <p>Clientes Satisfeitos</p>
+                </div>
+                <div class="counter-item">
+                    <span class="counter-number" data-target="8">0</span>
+                    <p>Anos de Tradição</p>
+                </div>
+            </div>
         </section>
 
+        <!-- ===== MARQUEE ===== -->
         <div class="marquee">
             <div class="marquee-content">
-                <span>Qualidade</span>
-                <span>Durabilidade</span>
-                <span>Exclusividade</span>
-                <span>Axé</span>
-                <span>Qualidade</span>
-                <span>Durabilidade</span>
-                <span>Exclusividade</span>
-                <span>Axé</span>
+                <span>Qualidade</span><span>•</span>
+                <span>Durabilidade</span><span>•</span>
+                <span>Exclusividade</span><span>•</span>
+                <span>Axé</span><span>•</span>
+                <span>Qualidade</span><span>•</span>
+                <span>Durabilidade</span><span>•</span>
+                <span>Exclusividade</span><span>•</span>
+                <span>Axé</span><span>•</span>
             </div>
         </div>
 
+        <!-- ===== VITRINE ===== -->
         <section id="vitrine" class="section">
             <div class="section-header">
                 <div class="section-title">
                     <p>Peças Únicas</p>
                     <h2>Vitrine Sagrada</h2>
                 </div>
+                <a href="catalog.html" class="btn-outline-sm">Ver Catálogo Completo →</a>
             </div>
 
             <div class="vitrine-grid">
                 <div class="product-card">
                     <div class="product-card-inner">
+                        <span class="product-tag tag-bestseller">Mais Vendido</span>
                         <img src="product1.png" alt="Bata em Linho" width="400" height="533" loading="lazy">
                     </div>
                     <div class="product-details">
@@ -82,6 +106,7 @@
 
                 <div class="product-card">
                     <div class="product-card-inner">
+                        <span class="product-tag tag-new">Novo</span>
                         <img src="product2.png" alt="Saia de Renda" width="400" height="533" loading="lazy">
                     </div>
                     <div class="product-details">
@@ -104,6 +129,117 @@
             </div>
         </section>
 
+        <!-- ===== LOOKBOOK ===== -->
+        <section class="lookbook">
+            <div class="lookbook-header">
+                <p>Editorial</p>
+                <h2>Lookbook</h2>
+            </div>
+            <div class="lookbook-scroll">
+                <div class="lookbook-item">
+                    <img src="lookbook1.png" alt="Lookbook 1" loading="lazy">
+                </div>
+                <div class="lookbook-item">
+                    <img src="hero.png" alt="Lookbook 2" loading="lazy">
+                </div>
+                <div class="lookbook-item">
+                    <img src="lookbook2.png" alt="Lookbook 3" loading="lazy">
+                </div>
+                <div class="lookbook-item">
+                    <img src="atelier.png" alt="Lookbook 4" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== COMO FUNCIONA (TIMELINE) ===== -->
+        <section id="como-funciona" class="section timeline-section">
+            <div class="section-title" style="text-align: center; margin-bottom: 60px;">
+                <p>Sob Medida</p>
+                <h2>Como Funciona</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Escolha o Modelo</h3>
+                        <p>Navegue pelo catálogo ou nos envie uma referência da peça desejada.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Envie suas Medidas</h3>
+                        <p>Enviamos um guia simples para você tirar suas medidas em casa.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Aprovação</h3>
+                        <p>Você recebe o croqui e detalhes do tecido para aprovar antes da produção.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Produção Artesanal</h3>
+                        <p>Cada ponto é dado com intenção e respeito à tradição sagrada.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-number">05</div>
+                    <div class="step-content">
+                        <h3>Entrega</h3>
+                        <p>Sua peça chega embalada com carinho, pronta para vestir com fé.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DEPOIMENTOS ===== -->
+        <section class="section testimonials-section">
+            <div class="section-title" style="text-align: center; margin-bottom: 60px;">
+                <p>O que dizem</p>
+                <h2>Nossos Clientes</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"A qualidade é incomparável. Minha saia de renda ficou perfeita, exatamente como eu imaginava. Recomendo de olhos fechados!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div>
+                            <strong>Maria das Graças</strong>
+                            <span>São Paulo, SP</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Encomendei um conjunto sob medida e superou todas as expectativas. O acabamento é impecável e o atendimento nota 10."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">J</div>
+                        <div>
+                            <strong>João Pedro</strong>
+                            <span>Salvador, BA</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Compro aqui há 3 anos. Cada peça é feita com tanto amor e respeito que dá para sentir a energia positiva ao vestir."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">C</div>
+                        <div>
+                            <strong>Cláudia Oliveira</strong>
+                            <span>Rio de Janeiro, RJ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STORY ===== -->
         <section class="story-section">
             <div class="story-image-group">
                 <img src="hero.png" alt="Ateliê" class="story-img-1" width="600" height="400" loading="lazy">
@@ -113,25 +249,97 @@
                 <p>Nossa Essência</p>
                 <h2>A Tradição em Cada Ponto</h2>
                 <p>Não costuramos apenas tecidos, costuramos memórias e fé. No Ateliê Roupa de Terreiro, cada peça é tratada como um item sagrado, respeitando os preceitos e a beleza de cada detalhe.</p>
-                <a href="#atelier" class="btn-magnetic">Conheça o Ateliê</a>
+                <a href="#como-funciona" class="btn-magnetic">Conheça o Ateliê</a>
             </div>
         </section>
 
+        <!-- ===== ATELIER ===== -->
         <section id="atelier" class="atelier">
             <div class="atelier-content">
                 <p>O Coração do Nosso Trabalho</p>
                 <h2>Ateliê Sob Medida</h2>
                 <p>Criamos peças exclusivas que respeitam a sua história e o seu sagrado. Cada ponto é dado com intenção, garantindo durabilidade e beleza única.</p>
-                <a href="https://wa.me/seunumeroaqui" class="cta-button" style="background: #0a0a0a; color: white;">Solicitar Orçamento</a>
+                <a href="https://wa.me/seunumeroaqui" class="cta-button">Solicitar Orçamento</a>
             </div>
             <div class="atelier-image" style="background-image: url('atelier.png');"></div>
         </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="section faq-section">
+            <div class="section-title" style="text-align: center; margin-bottom: 60px;">
+                <p>Tire Suas Dúvidas</p>
+                <h2>Perguntas Frequentes</h2>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Quanto tempo demora uma peça sob medida?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>O prazo médio é de 15 a 25 dias úteis, dependendo da complexidade da peça e dos detalhes de bordado. Peças mais elaboradas podem levar até 30 dias.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Quais formas de pagamento vocês aceitam?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Aceitamos PIX, transferência bancária e cartão de crédito (em até 3x sem juros). Para peças sob medida, pedimos 50% de entrada e 50% na entrega.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Vocês fazem envio para todo o Brasil?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim! Enviamos para todo o Brasil pelos Correios (PAC e SEDEX). O frete é calculado no momento do pedido via WhatsApp.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Como faço para enviar minhas medidas?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Após a confirmação do pedido, enviamos um guia ilustrado simples pelo WhatsApp com todas as instruções para você tirar suas medidas em casa com uma fita métrica.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>As peças de pronta entrega podem ser ajustadas?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim! Podemos fazer pequenos ajustes de comprimento e cintura nas peças de pronta entrega. Consulte-nos via WhatsApp para verificar a viabilidade.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== INSTAGRAM ===== -->
+        <section class="section instagram-section">
+            <div class="section-title" style="text-align: center; margin-bottom: 40px;">
+                <p>Siga-nos</p>
+                <h2>@roupadeterreiro</h2>
+            </div>
+            <div class="instagram-grid">
+                <div class="insta-item"><img src="product1.png" alt="Instagram" loading="lazy"></div>
+                <div class="insta-item"><img src="lookbook1.png" alt="Instagram" loading="lazy"></div>
+                <div class="insta-item"><img src="product4.png" alt="Instagram" loading="lazy"></div>
+                <div class="insta-item"><img src="hero.png" alt="Instagram" loading="lazy"></div>
+                <div class="insta-item"><img src="product2.png" alt="Instagram" loading="lazy"></div>
+                <div class="insta-item"><img src="lookbook2.png" alt="Instagram" loading="lazy"></div>
+            </div>
+        </section>
     </main>
 
-    <!-- Cart Overlay -->
+    <!-- CART OVERLAY -->
     <div class="cart-overlay"></div>
 
-    <!-- Cart Sidebar -->
+    <!-- CART SIDEBAR -->
     <div class="cart-sidebar">
         <div class="cart-header">
             <h2>Seu Carrinho</h2>
@@ -147,6 +355,12 @@
         </div>
     </div>
 
+    <!-- WHATSAPP FLOATING BUTTON -->
+    <a href="https://wa.me/seunumeroaqui" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <!-- FOOTER -->
     <footer id="contato">
         <div class="footer-brand">
             <img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Logo" loading="lazy">
@@ -157,14 +371,15 @@
             <ul>
                 <li><a href="#home">Início</a></li>
                 <li><a href="catalog.html">Catálogo</a></li>
-                <li><a href="#atelier">Ateliê</a></li>
+                <li><a href="#como-funciona">Sob Medida</a></li>
+                <li><a href="#faq">Dúvidas</a></li>
             </ul>
         </div>
         <div class="footer-links">
             <h4>Contato</h4>
             <ul>
                 <li><a href="#">Instagram</a></li>
-                <li><a href="#">WhatsApp</a></li>
+                <li><a href="https://wa.me/seunumeroaqui">WhatsApp</a></li>
                 <li><a href="#">E-mail</a></li>
             </ul>
         </div>
