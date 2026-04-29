@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const obs = new IntersectionObserver(entries => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
     }, { threshold: 0.05 });
-    document.querySelectorAll('.section,.product-card,.story-section,.atelier,.reveal-item,.timeline-step,.testimonial-card,.lookbook-item').forEach(el => {
+    document.querySelectorAll('.section,.product-card,.story-section,.atelier,.reveal-item,.timeline-step,.testimonial-card,.bento-item').forEach(el => {
         if (!el.classList.contains('reveal-item')) el.classList.add('reveal-item');
         obs.observe(el);
     });
