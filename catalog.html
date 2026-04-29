@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | Roupa de Terreiro</title>
+    <meta name="description" content="Catálogo completo de roupas de terreiro. Peças de alta qualidade, pronta entrega e sob medida.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav id="navbar">
+        <div class="nav-logo">
+            <a href="index.html"><img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Logo"></a>
+        </div>
+        <button class="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="#feminino">Feminino</a>
+            <a href="#masculino">Masculino</a>
+            <div class="cart-toggle">
+                <span>Carrinho</span>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="catalog-header">
+        <p>Artesanato Sagrado</p>
+        <h1>Nosso Catálogo</h1>
+    </header>
+
+    <main class="section">
+        <div class="vitrine-grid">
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product2.png" alt="Saia de Renda" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Saia de Renda Luxo</h3>
+                    <p class="price">R$ 389,00</p>
+                    <button class="add-to-cart" data-name="Saia de Renda Luxo" data-price="389.00" data-image="product2.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product4.png" alt="Conjunto Masculino" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Conjunto Masculino Premium</h3>
+                    <p class="price">R$ 450,00</p>
+                    <button class="add-to-cart" data-name="Conjunto Masculino" data-price="450.00" data-image="product4.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product6.png" alt="Vestido Ethereal" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Vestido Ethereal Flow</h3>
+                    <p class="price">R$ 560,00</p>
+                    <button class="add-to-cart" data-name="Vestido Ethereal" data-price="560.00" data-image="product6.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product1.png" alt="Bata em Linho" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Bata em Linho Fino</h3>
+                    <p class="price">R$ 249,00</p>
+                    <button class="add-to-cart" data-name="Bata em Linho" data-price="249.00" data-image="product1.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product3.png" alt="Ojá Bordado" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Ojá Bordado Artesanal</h3>
+                    <p class="price">R$ 120,00</p>
+                    <button class="add-to-cart" data-name="Ojá Bordado Manual" data-price="120.00" data-image="product3.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    <img src="product5.png" alt="Guia de Cristais" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>Guia Sagrada de Cristais</h3>
+                    <p class="price">R$ 89,00</p>
+                    <button class="add-to-cart" data-name="Guia de Cristais" data-price="89.00" data-image="product5.png">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Seu Carrinho</h2>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="cart-total-value">R$ 0,00</span>
+            </div>
+            <button class="checkout-whatsapp btn-magnetic">Finalizar no WhatsApp</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
