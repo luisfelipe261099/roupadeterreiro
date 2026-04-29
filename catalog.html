@@ -20,8 +20,7 @@
         </button>
         <div class="nav-links">
             <a href="index.html">Início</a>
-            <a href="#feminino">Feminino</a>
-            <a href="#masculino">Masculino</a>
+            <a href="#catalogo">Catálogo</a>
             <div class="cart-toggle">
                 <span>Carrinho</span>
                 <span class="cart-count">0</span>
@@ -34,108 +33,13 @@
         <h1>Nosso Catálogo</h1>
     </header>
 
-    <main class="section">
-        <div class="vitrine-grid">
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <span class="product-tag tag-bestseller">Mais Vendido</span>
-                    <img src="product2.png" alt="Saia de Renda" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Saia de Renda Luxo</h3>
-                    <p class="price">R$ 389,00</p>
-                    <div class="size-selector">
-                        <button class="size-btn active">P</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">G</button>
-                        <button class="size-btn">GG</button>
-                    </div>
-                    <button class="add-to-cart" data-name="Saia de Renda Luxo" data-price="389.00" data-image="product2.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
-
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <span class="product-tag tag-new">Novo</span>
-                    <img src="product4.png" alt="Conjunto Masculino" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Conjunto Masculino Premium</h3>
-                    <p class="price">R$ 450,00</p>
-                    <div class="size-selector">
-                        <button class="size-btn active">P</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">G</button>
-                        <button class="size-btn">GG</button>
-                    </div>
-                    <button class="add-to-cart" data-name="Conjunto Masculino" data-price="450.00" data-image="product4.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
-
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <img src="product6.png" alt="Vestido Ethereal" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Vestido Ethereal Flow</h3>
-                    <p class="price">R$ 560,00</p>
-                    <div class="size-selector">
-                        <button class="size-btn active">P</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">G</button>
-                        <button class="size-btn">GG</button>
-                    </div>
-                    <button class="add-to-cart" data-name="Vestido Ethereal" data-price="560.00" data-image="product6.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
-
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <span class="product-tag tag-bestseller">Mais Vendido</span>
-                    <img src="product1.png" alt="Bata em Linho" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Bata em Linho Fino</h3>
-                    <p class="price">R$ 249,00</p>
-                    <div class="size-selector">
-                        <button class="size-btn active">P</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">G</button>
-                        <button class="size-btn">GG</button>
-                    </div>
-                    <button class="add-to-cart" data-name="Bata em Linho" data-price="249.00" data-image="product1.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
-
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <span class="product-tag tag-custom">Sob Encomenda</span>
-                    <img src="product3.png" alt="Ojá Bordado" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Ojá Bordado Artesanal</h3>
-                    <p class="price">R$ 120,00</p>
-                    <button class="add-to-cart" data-name="Ojá Bordado Manual" data-price="120.00" data-image="product3.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
-
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    <img src="product5.png" alt="Guia de Cristais" width="400" height="533" loading="lazy">
-                </div>
-                <div class="product-details">
-                    <h3>Guia Sagrada de Cristais</h3>
-                    <p class="price">R$ 89,00</p>
-                    <button class="add-to-cart" data-name="Guia de Cristais" data-price="89.00" data-image="product5.png">Adicionar ao Carrinho</button>
-                </div>
-            </div>
+    <main id="catalogo" class="section">
+        <div class="vitrine-grid" id="catalog-grid">
+            <!-- Products loaded dynamically from localStorage -->
         </div>
     </main>
 
-    <!-- CART OVERLAY -->
     <div class="cart-overlay"></div>
-
-    <!-- CART SIDEBAR -->
     <div class="cart-sidebar">
         <div class="cart-header">
             <h2>Seu Carrinho</h2>
@@ -151,11 +55,77 @@
         </div>
     </div>
 
-    <!-- WHATSAPP FLOATING -->
     <a href="https://wa.me/seunumeroaqui" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
     <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tagMap = { new: 'tag-new', bestseller: 'tag-bestseller', custom: 'tag-custom' };
+        const tagLabel = { new: 'Novo', bestseller: 'Mais Vendido', custom: 'Sob Encomenda' };
+
+        const defaults = [
+            { id:1, name:'Saia de Renda Luxo', price:389, image:'product2.png', tag:'bestseller', sizes:['P','M','G','GG'] },
+            { id:2, name:'Conjunto Masculino Premium', price:450, image:'product4.png', tag:'new', sizes:['P','M','G','GG'] },
+            { id:3, name:'Vestido Ethereal Flow', price:560, image:'product6.png', tag:'', sizes:['P','M','G','GG'] },
+            { id:4, name:'Bata em Linho Fino', price:249, image:'product1.png', tag:'bestseller', sizes:['P','M','G','GG'] },
+            { id:5, name:'Ojá Bordado Artesanal', price:120, image:'product3.png', tag:'custom', sizes:['Único'] },
+            { id:6, name:'Guia Sagrada de Cristais', price:89, image:'product5.png', tag:'', sizes:['Único'] },
+        ];
+
+        let products = JSON.parse(localStorage.getItem('admin_products')) || defaults;
+        const grid = document.getElementById('catalog-grid');
+
+        grid.innerHTML = products.map(p => `
+            <div class="product-card reveal-item">
+                <div class="product-card-inner">
+                    ${p.tag ? `<span class="product-tag ${tagMap[p.tag] || ''}">${tagLabel[p.tag] || ''}</span>` : ''}
+                    <img src="${p.image}" alt="${p.name}" width="400" height="533" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <h3>${p.name}</h3>
+                    <p class="price">R$ ${p.price.toFixed(2).replace('.',',')}</p>
+                    ${p.sizes && p.sizes.length && p.sizes[0] !== 'Único' ? `
+                        <div class="size-selector">
+                            ${p.sizes.map((s,i) => `<button class="size-btn${i===0?' active':''}">${s}</button>`).join('')}
+                        </div>
+                    ` : ''}
+                    <button class="add-to-cart" data-name="${p.name}" data-price="${p.price}" data-image="${p.image}">Adicionar ao Carrinho</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Re-init size selectors
+        document.querySelectorAll('.size-selector').forEach(sel => {
+            sel.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sel.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        });
+
+        // Re-init add to cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sizeEl = btn.parentElement.querySelector('.size-btn.active');
+                cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
+                localStorage.setItem('cart', JSON.stringify(cart));
+                document.querySelectorAll('.cart-count').forEach(el => el.textContent = cart.length);
+                const orig = btn.textContent;
+                btn.textContent = '✓ Adicionado!'; btn.style.background='var(--accent)'; btn.style.borderColor='var(--accent)'; btn.style.color='#000';
+                setTimeout(() => { btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 1500);
+            });
+        });
+
+        // Reveal animation
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+        }, { threshold: 0.05 });
+        document.querySelectorAll('.reveal-item').forEach(el => obs.observe(el));
+    });
+    </script>
 </body>
 </html>
