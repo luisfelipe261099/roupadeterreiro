@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catalogo | Atelier Roupas de Terreiro</title>
+    <meta
+      name="description"
+      content="Catalogo com varios produtos do Atelier Roupas de Terreiro: capas, saias, conjuntos e pecas espirituais."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="Ir para pagina inicial">
+          <img src="assets/images/logo.svg" alt="Logo Atelier Roupas de Terreiro" class="brand-logo" />
+          <div class="brand-text">
+            <strong>Atelier Roupas de Terreiro</strong>
+            <span>Veste com Fe</span>
+          </div>
+        </a>
+
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">Menu</button>
+
+        <nav class="main-nav" id="main-nav">
+          <a href="index.html">Home</a>
+          <a href="catalogo.html" class="active">Catalogo</a>
+          <a href="atelie.html">Atelie Sob Encomenda</a>
+          <a href="sobre.html">Sobre</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section page-hero">
+        <div class="container content-card reveal">
+          <p class="section-tag">Catalogo</p>
+          <h1 class="page-title">Produtos para pedido rapido</h1>
+          <p class="page-subtitle">
+            Escolha por linha de trabalho, filtre os modelos e envie o pedido direto pelo WhatsApp.
+            As imagens abaixo sao referencias visuais do universo de terreiro ate a entrada do acervo oficial da cliente.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section-alt">
+        <div class="container catalog-toolbar reveal">
+          <input
+            id="catalog-search"
+            class="search-input"
+            type="search"
+            placeholder="Buscar produto..."
+            aria-label="Buscar produto"
+          />
+          <div class="filter-row" role="tablist" aria-label="Filtrar catalogo">
+            <button class="filter-btn active" type="button" data-filter="todos">Todos</button>
+            <button class="filter-btn" type="button" data-filter="linha-esquerda">Linha Esquerda</button>
+            <button class="filter-btn" type="button" data-filter="linha-branca">Linha Branca</button>
+            <button class="filter-btn" type="button" data-filter="linha-neutra">Linha Neutra</button>
+            <button class="filter-btn" type="button" data-filter="acessorios">Acessorios</button>
+            <button class="filter-btn" type="button" data-filter="cerimonial">Cerimonial</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container product-grid" data-catalog-grid>
+          <article class="product-card reveal" data-category="linha-esquerda" data-name="Capa Rei Caveira">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232203893%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232203893%29.jpg" alt="Referencia real para Capa Rei Caveira" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Capa Rei Caveira</h3>
+              <p class="product-meta">Linha Esquerda</p>
+              <span class="badge">Pronta entrega</span>
+              <a class="text-link js-product-whats" href="#" data-product="Capa Rei Caveira">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-1" data-category="linha-esquerda" data-name="Capa Rosa Caveira">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204183%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204183%29.jpg" alt="Referencia real para Capa Rosa Caveira" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Capa Rosa Caveira</h3>
+              <p class="product-meta">Linha Esquerda</p>
+              <span class="badge">Pronta entrega</span>
+              <a class="text-link js-product-whats" href="#" data-product="Capa Rosa Caveira">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-2" data-category="linha-esquerda" data-name="Capa Tranca Ruas">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204273%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204273%29.jpg" alt="Referencia real para Capa Tranca Ruas" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Capa Tranca Ruas</h3>
+              <p class="product-meta">Linha Esquerda</p>
+              <span class="badge">Alta procura</span>
+              <a class="text-link js-product-whats" href="#" data-product="Capa Tranca Ruas">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="linha-esquerda" data-name="Capa Maria Mulambo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204393%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204393%29.jpg" alt="Referencia real para Capa Maria Mulambo" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Capa Maria Mulambo</h3>
+              <p class="product-meta">Linha Esquerda</p>
+              <span class="badge">Pronta entrega</span>
+              <a class="text-link js-product-whats" href="#" data-product="Capa Maria Mulambo">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-1" data-category="acessorios" data-name="Penacho Verde">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Objeto_sagrado_do_candomble_001.JPG/700px-Objeto_sagrado_do_candomble_001.JPG" alt="Referencia real para Penacho Verde" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Penacho Verde</h3>
+              <p class="product-meta">Acessorio ritual</p>
+              <span class="badge">Destaque</span>
+              <a class="text-link js-product-whats" href="#" data-product="Penacho Verde">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-2" data-category="linha-neutra" data-name="Roupa de Ogum">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830235532034%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830235532034%29.jpg" alt="Referencia real para Roupa de Ogum" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Roupa de Ogum</h3>
+              <p class="product-meta">Linha Neutra</p>
+              <span class="badge">Nova colecao</span>
+              <a class="text-link js-product-whats" href="#" data-product="Roupa de Ogum">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="linha-esquerda" data-name="Roupa Preta Mulambo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204273%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204273%29.jpg" alt="Referencia real para Roupa Preta Mulambo" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Roupa Preta Mulambo</h3>
+              <p class="product-meta">Pai de Santo</p>
+              <span class="badge">Personalizavel</span>
+              <a class="text-link js-product-whats" href="#" data-product="Roupa Preta Mulambo">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-1" data-category="linha-esquerda" data-name="Roupa Mulambo Lenise">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204393%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204393%29.jpg" alt="Referencia real para Roupa Mulambo Lenise" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Roupa Mulambo Lenise</h3>
+              <p class="product-meta">Linha Esquerda</p>
+              <span class="badge">Pronta entrega</span>
+              <a class="text-link js-product-whats" href="#" data-product="Roupa Mulambo Lenise">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-2" data-category="linha-branca" data-name="Roupa Mae de Santo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Devota_de_Iemanja.jpg/700px-Devota_de_Iemanja.jpg" alt="Referencia real para Roupa Mae de Santo" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Roupa Mae de Santo</h3>
+              <p class="product-meta">Linha Branca</p>
+              <span class="badge">Sob consulta</span>
+              <a class="text-link js-product-whats" href="#" data-product="Roupa Mae de Santo">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal" data-category="linha-neutra" data-name="Cigana da Estrada Azul">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204183%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830232204183%29.jpg" alt="Referencia real para Cigana da Estrada Azul" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Cigana da Estrada Azul</h3>
+              <p class="product-meta">Linha Neutra</p>
+              <span class="badge">Nova colecao</span>
+              <a class="text-link js-product-whats" href="#" data-product="Cigana da Estrada Azul">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-1" data-category="cerimonial" data-name="Noiva Umbandista">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Devota_de_Iemanja.jpg/700px-Devota_de_Iemanja.jpg" alt="Referencia real para Noiva Umbandista" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Noiva Umbandista</h3>
+              <p class="product-meta">Cerimonial</p>
+              <span class="badge">Sob encomenda</span>
+              <a class="text-link js-product-whats" href="#" data-product="Noiva Umbandista">Pedir este produto</a>
+            </div>
+          </article>
+
+          <article class="product-card reveal delay-2" data-category="linha-branca" data-name="Conjunto Branco Ritual">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830235532034%29.jpg/700px-Umbanda_%C3%A9_declarada_patrim%C3%B4nio_imaterial_do_Rio_de_Janeiro_%2830235532034%29.jpg" alt="Referencia real para Conjunto Branco Ritual" loading="lazy" decoding="async" />
+            <div class="product-content">
+              <h3>Conjunto Branco Ritual</h3>
+              <p class="product-meta">Linha Branca</p>
+              <span class="badge">Pronta entrega</span>
+              <a class="text-link js-product-whats" href="#" data-product="Conjunto Branco Ritual">Pedir este produto</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container cta-box reveal">
+          <p class="section-tag">Pedido</p>
+          <h2>Gostou de algum modelo?</h2>
+          <p>Fale no WhatsApp e receba valores, prazos e opcoes de ajuste.</p>
+          <a
+            class="btn"
+            href="https://wa.me/5541998172291?text=Ola%2C%20vim%20pelo%20catalogo%20e%20quero%20informacoes"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Chamar no WhatsApp</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <a
+      class="floating-whatsapp"
+      href="https://wa.me/5541998172291?text=Ola%2C%20quero%20atendimento"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Falar no WhatsApp"
+      >
+      <span class="whatsapp-mark">W</span>
+      <span>
+        <strong>Falar no WhatsApp</strong>
+        <small>Atendimento direto</small>
+      </span>
+    </a
+    >
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Atelier Roupas de Terreiro</p>
+        <p>Curitiba - PR | Veste com Fe</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 540" role="img" aria-labelledby="title">
+  <title id="title">Imagem catalogo</title>
+  <rect width="800" height="540" fill="#fff"/>
+  <rect x="80" y="90" width="180" height="360" rx="16" fill="#f4eefb"/>
+  <rect x="310" y="90" width="180" height="360" rx="16" fill="#f2f2f6"/>
+  <rect x="540" y="90" width="180" height="360" rx="16" fill="#fdecee"/>
+  <path d="M140 170 L170 198 L170 230 L220 308 Q150 334 100 308 L150 230 L150 198 Z" fill="#fff"/>
+  <path d="M370 170 L400 198 L400 230 L450 308 Q380 334 330 308 L380 230 L380 198 Z" fill="#fff"/>
+  <path d="M600 170 L630 198 L630 230 L680 308 Q610 334 560 308 L610 230 L610 198 Z" fill="#fff"/>
+  <text x="140" y="500" font-size="30" fill="#3f344d" font-family="Montserrat, Arial, sans-serif">Catalogo pronto para pedido rapido</text>
+</svg>

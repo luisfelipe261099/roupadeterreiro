@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 540" role="img" aria-labelledby="title">
+  <title id="title">Imagem sob medida</title>
+  <rect width="800" height="540" fill="#f7f1fb"/>
+  <rect x="90" y="100" width="620" height="340" rx="30" fill="#ffffff" stroke="#d7c6eb" stroke-width="6"/>
+  <path d="M250 170 L290 210 L290 250 L360 350 Q260 390 170 350 L240 250 L240 210 Z" fill="#f3f3f6" stroke="#d6d6de" stroke-width="4"/>
+  <path d="M500 180 L560 280" stroke="#8a63ba" stroke-width="12" stroke-linecap="round"/>
+  <path d="M560 180 L500 280" stroke="#d12634" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="500" cy="180" r="24" fill="none" stroke="#8a63ba" stroke-width="8"/>
+  <circle cx="560" cy="180" r="24" fill="none" stroke="#d12634" stroke-width="8"/>
+  <text x="130" y="420" font-family="Montserrat, Arial, sans-serif" font-size="30" fill="#4d3d62">Peca feita para o seu corpo e sua Entidade</text>
+</svg>
