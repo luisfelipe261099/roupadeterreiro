@@ -100,7 +100,7 @@
         .upload-area {
             border: 2px dashed rgba(255,255,255,.15);
             border-radius: 12px;
-            padding: 40px 20px;
+            padding: 25px 10px;
             text-align: center;
             cursor: pointer;
             transition: all .3s;
@@ -117,33 +117,70 @@
             cursor: pointer;
         }
         .upload-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 8px;
             opacity: .4;
         }
         .upload-area p {
             color: var(--text-muted);
-            font-size: .85rem;
+            font-size: .8rem;
         }
         .upload-area .hint {
-            font-size: .7rem;
+            font-size: .65rem;
             color: rgba(255,255,255,.3);
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
-        /* Preview */
-        .image-preview {
-            margin-top: 15px;
-            display: none;
+        /* Multi-image grid */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
-        .image-preview img {
-            width: 120px;
-            height: 120px;
+        .upload-slot-label {
+            font-size: .65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
+        }
+        .upload-slot-label .required-star { color: var(--accent); }
+
+        /* Preview */
+        .slot-preview {
+            margin-top: 8px;
+            display: none;
+            position: relative;
+        }
+        .slot-preview img {
+            width: 100%;
+            aspect-ratio: 3/4;
             object-fit: cover;
             border-radius: 8px;
             border: 2px solid var(--accent);
         }
-        .image-preview.has-image { display: block; }
+        .slot-preview .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,.7);
+            border: none;
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: .8rem;
+            cursor: pointer;
+            line-height: 22px;
+            text-align: center;
+            padding: 0;
+        }
+        .slot-preview.has-image { display: block; }
+
+        @media (max-width: 500px) {
+            .upload-grid { grid-template-columns: 1fr; }
+        }
 
         /* Checkbox group */
         .checkbox-group {
@@ -382,15 +419,50 @@
         <div class="tab-content" id="tab-add">
             <form id="product-form">
                 <div class="form-group">
-                    <label>Foto do Produto</label>
-                    <div class="upload-area" id="upload-area">
-                        <input type="file" id="product-image" accept="image/*">
-                        <div class="upload-icon">📷</div>
-                        <p>Clique ou arraste a foto aqui</p>
-                        <span class="hint">JPG, PNG — máx. 2MB</span>
-                    </div>
-                    <div class="image-preview" id="image-preview">
-                        <img id="preview-img" src="" alt="Preview">
+                    <label>Fotos do Produto <small style="color:var(--text-muted);text-transform:none;letter-spacing:0">(até 3 imagens)</small></label>
+                    <div class="upload-grid">
+                        <!-- Slot 1 -->
+                        <div>
+                            <span class="upload-slot-label">Foto Principal <span class="required-star">*</span></span>
+                            <div class="upload-area" id="upload-area-1">
+                                <input type="file" id="product-image-1" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-1">
+                                <img id="preview-img-1" src="" alt="">
+                                <button class="remove-img" data-slot="1">&times;</button>
+                            </div>
+                        </div>
+                        <!-- Slot 2 -->
+                        <div>
+                            <span class="upload-slot-label">Foto 2 <small style="font-size:.6rem;opacity:.5">(opcional)</small></span>
+                            <div class="upload-area" id="upload-area-2">
+                                <input type="file" id="product-image-2" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-2">
+                                <img id="preview-img-2" src="" alt="">
+                                <button class="remove-img" data-slot="2">&times;</button>
+                            </div>
+                        </div>
+                        <!-- Slot 3 -->
+                        <div>
+                            <span class="upload-slot-label">Foto 3 <small style="font-size:.6rem;opacity:.5">(opcional)</small></span>
+                            <div class="upload-area" id="upload-area-3">
+                                <input type="file" id="product-image-3" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-3">
+                                <img id="preview-img-3" src="" alt="">
+                                <button class="remove-img" data-slot="3">&times;</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -442,12 +514,12 @@
     document.addEventListener('DOMContentLoaded', () => {
         // ===== DATA =====
         const DEFAULT_PRODUCTS = [
-            { id: 1, name: 'Saia de Renda Luxo', price: 389, image: 'product2.png', tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 2, name: 'Conjunto Masculino Premium', price: 450, image: 'product4.png', tag: 'new', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 3, name: 'Vestido Ethereal Flow', price: 560, image: 'product6.png', tag: '', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 4, name: 'Bata em Linho Fino', price: 249, image: 'product1.png', tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 5, name: 'Ojá Bordado Artesanal', price: 120, image: 'product3.png', tag: 'custom', sizes: ['Único'], desc: '' },
-            { id: 6, name: 'Guia Sagrada de Cristais', price: 89, image: 'product5.png', tag: '', sizes: ['Único'], desc: '' },
+            { id: 1, name: 'Saia de Renda Luxo', price: 389, images: ['product2.png'], tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
+            { id: 2, name: 'Conjunto Masculino Premium', price: 450, images: ['product4.png'], tag: 'new', sizes: ['P','M','G','GG'], desc: '' },
+            { id: 3, name: 'Vestido Ethereal Flow', price: 560, images: ['product6.png'], tag: '', sizes: ['P','M','G','GG'], desc: '' },
+            { id: 4, name: 'Bata em Linho Fino', price: 249, images: ['product1.png'], tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
+            { id: 5, name: 'Ojá Bordado Artesanal', price: 120, images: ['product3.png'], tag: 'custom', sizes: ['Único'], desc: '' },
+            { id: 6, name: 'Guia Sagrada de Cristais', price: 89, images: ['product5.png'], tag: '', sizes: ['Único'], desc: '' },
         ];
 
         let products = JSON.parse(localStorage.getItem('admin_products'));
@@ -481,20 +553,23 @@
                 return;
             }
 
-            list.innerHTML = products.map(p => `
+            list.innerHTML = products.map(p => {
+                const imgs = p.images || (p.image ? [p.image] : []);
+                return `
                 <div class="admin-product-item">
-                    <img src="${p.image}" alt="${p.name}">
+                    <img src="${imgs[0] || ''}" alt="${p.name}">
                     <div class="admin-product-info">
                         <h3>${p.name}</h3>
                         <div class="meta">
                             <span class="price-tag">R$ ${p.price.toFixed(2).replace('.', ',')}</span>
                             ${p.tag ? `<span class="product-tag tag-${p.tag}" style="position:static;font-size:.6rem">${tagLabels[p.tag] || p.tag}</span>` : ''}
                             <span>${(p.sizes || []).join(', ')}</span>
+                            ${imgs.length > 1 ? `<span>${imgs.length} fotos</span>` : ''}
                         </div>
                     </div>
                     <button class="btn-delete" data-id="${p.id}">Remover</button>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
 
             list.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -508,26 +583,33 @@
             });
         }
 
-        // ===== IMAGE UPLOAD =====
-        let uploadedImage = '';
-        const fileInput = document.getElementById('product-image');
-        const preview = document.getElementById('image-preview');
-        const previewImg = document.getElementById('preview-img');
+        // ===== IMAGE UPLOAD (3 slots) =====
+        const uploadedImages = ['', '', ''];
 
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.size > 2 * 1024 * 1024) {
-                showToast('Imagem muito grande! Máx. 2MB');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                uploadedImage = ev.target.result;
-                previewImg.src = uploadedImage;
-                preview.classList.add('has-image');
-            };
-            reader.readAsDataURL(file);
+        [1, 2, 3].forEach(slot => {
+            const fileInput = document.getElementById(`product-image-${slot}`);
+            const preview = document.getElementById(`preview-${slot}`);
+            const previewImg = document.getElementById(`preview-img-${slot}`);
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) { showToast('Imagem muito grande! Máx. 2MB'); return; }
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    uploadedImages[slot - 1] = ev.target.result;
+                    previewImg.src = ev.target.result;
+                    preview.classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            preview.querySelector('.remove-img').addEventListener('click', () => {
+                uploadedImages[slot - 1] = '';
+                previewImg.src = '';
+                preview.classList.remove('has-image');
+                fileInput.value = '';
+            });
         });
 
         // ===== FORM SUBMIT =====
@@ -544,8 +626,8 @@
                 showToast('Preencha nome e preço!');
                 return;
             }
-            if (!uploadedImage) {
-                showToast('Adicione uma foto!');
+            if (!uploadedImages[0]) {
+                showToast('Adicione a foto principal!');
                 return;
             }
 
@@ -553,7 +635,7 @@
                 id: Date.now(),
                 name,
                 price,
-                image: uploadedImage,
+                images: uploadedImages.filter(Boolean),
                 tag,
                 sizes,
                 desc
@@ -564,8 +646,12 @@
 
             // Reset form
             e.target.reset();
-            uploadedImage = '';
-            preview.classList.remove('has-image');
+            uploadedImages[0] = ''; uploadedImages[1] = ''; uploadedImages[2] = '';
+            [1,2,3].forEach(s => {
+                document.getElementById(`preview-img-${s}`).src = '';
+                document.getElementById(`preview-${s}`).classList.remove('has-image');
+                document.getElementById(`product-image-${s}`).value = '';
+            });
 
             // Switch to products tab
             document.querySelector('[data-tab="products"]').click();
