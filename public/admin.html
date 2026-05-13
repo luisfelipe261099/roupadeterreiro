@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Roupa de Terreiro</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Admin-specific styles */
+        * { cursor: auto !important; }
+        .cursor, .cursor-follower { display: none !important; }
+
+        .admin-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+
+        .admin-header {
+            margin-bottom: 40px;
+        }
+        .admin-header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        .admin-header p {
+            color: var(--text-muted);
+        }
+
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .admin-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .3s;
+        }
+        .admin-tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            color: var(--secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            transition: border-color .3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .form-group select option {
+            background: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Upload area */
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,.15);
+            border-radius: 12px;
+            padding: 25px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s;
+            position: relative;
+        }
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(212,175,55,.05);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            opacity: .4;
+        }
+        .upload-area p {
+            color: var(--text-muted);
+            font-size: .8rem;
+        }
+        .upload-area .hint {
+            font-size: .65rem;
+            color: rgba(255,255,255,.3);
+            margin-top: 4px;
+        }
+
+        /* Multi-image grid */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .upload-slot-label {
+            font-size: .65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
+        }
+        .upload-slot-label .required-star { color: var(--accent); }
+
+        /* Preview */
+        .slot-preview {
+            margin-top: 8px;
+            display: none;
+            position: relative;
+        }
+        .slot-preview img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+        }
+        .slot-preview .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,.7);
+            border: none;
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: .8rem;
+            cursor: pointer;
+            line-height: 22px;
+            text-align: center;
+            padding: 0;
+        }
+        .slot-preview.has-image { display: block; }
+
+        @media (max-width: 500px) {
+            .upload-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Checkbox group */
+        .checkbox-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 6px;
+            font-size: .8rem;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all .3s;
+        }
+        .checkbox-group label:has(input:checked) {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+        .checkbox-group input { display: none; }
+
+        /* Submit button */
+        .btn-admin {
+            padding: 14px 35px;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: .85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all .3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-admin:hover {
+            background: #e6c34a;
+        }
+        .btn-admin.btn-danger {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* Product list */
+        .admin-product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .admin-product-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all .3s;
+        }
+        .admin-product-item:hover {
+            border-color: rgba(255,255,255,.15);
+        }
+        .admin-product-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        .admin-product-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .admin-product-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .admin-product-info .meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .admin-product-info .meta span {
+            font-size: .8rem;
+            color: var(--text-muted);
+        }
+        .admin-product-info .meta .price-tag {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .btn-delete {
+            background: rgba(255,68,68,.1);
+            border: 1px solid rgba(255,68,68,.2);
+            color: #ff4444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: .7rem;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all .3s;
+            flex-shrink: 0;
+        }
+        .btn-delete:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: .3;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent);
+            color: var(--primary);
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: .85rem;
+            font-weight: 600;
+            z-index: 9999;
+            transition: transform .4s ease;
+            white-space: nowrap;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Stats */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent);
+            display: block;
+        }
+        .stat-card .stat-label {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .admin-stats { grid-template-columns: 1fr; }
+            .admin-product-item { flex-direction: column; text-align: center; }
+            .admin-product-item img { width: 100%; height: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-logo">
+            <a href="index.html"><img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Logo"></a>
+        </div>
+        <div class="nav-links" style="background:none;border:none;backdrop-filter:none">
+            <a href="index.html">← Voltar ao Site</a>
+        </div>
+    </nav>
+
+    <div class="admin-wrapper">
+        <div class="admin-header">
+            <h1>Painel de Gestão</h1>
+            <p>Gerencie seus produtos, fotos e catálogo.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="admin-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="stat-total">0</span>
+                <span class="stat-label">Produtos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="stat-pronta">0</span>
+                <span class="stat-label">Pronta Entrega</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="stat-encomenda">0</span>
+                <span class="stat-label">Sob Encomenda</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="products">Produtos</button>
+            <button class="admin-tab" data-tab="add">Adicionar Novo</button>
+        </div>
+
+        <!-- Tab: Product List -->
+        <div class="tab-content active" id="tab-products">
+            <div class="admin-product-list" id="product-list">
+                <!-- Products rendered by JS -->
+            </div>
+        </div>
+
+        <!-- Tab: Add Product -->
+        <div class="tab-content" id="tab-add">
+            <form id="product-form">
+                <div class="form-group">
+                    <label>Fotos do Produto <small style="color:var(--text-muted);text-transform:none;letter-spacing:0">(até 3 imagens)</small></label>
+                    <div class="upload-grid">
+                        <!-- Slot 1 -->
+                        <div>
+                            <span class="upload-slot-label">Foto Principal <span class="required-star">*</span></span>
+                            <div class="upload-area" id="upload-area-1">
+                                <input type="file" id="product-image-1" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-1">
+                                <img id="preview-img-1" src="" alt="">
+                                <button class="remove-img" data-slot="1">&times;</button>
+                            </div>
+                        </div>
+                        <!-- Slot 2 -->
+                        <div>
+                            <span class="upload-slot-label">Foto 2 <small style="font-size:.6rem;opacity:.5">(opcional)</small></span>
+                            <div class="upload-area" id="upload-area-2">
+                                <input type="file" id="product-image-2" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-2">
+                                <img id="preview-img-2" src="" alt="">
+                                <button class="remove-img" data-slot="2">&times;</button>
+                            </div>
+                        </div>
+                        <!-- Slot 3 -->
+                        <div>
+                            <span class="upload-slot-label">Foto 3 <small style="font-size:.6rem;opacity:.5">(opcional)</small></span>
+                            <div class="upload-area" id="upload-area-3">
+                                <input type="file" id="product-image-3" accept="image/*">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique aqui</p>
+                                <span class="hint">JPG, PNG — 2MB</span>
+                            </div>
+                            <div class="slot-preview" id="preview-3">
+                                <img id="preview-img-3" src="" alt="">
+                                <button class="remove-img" data-slot="3">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome do Produto</label>
+                    <input type="text" id="product-name" placeholder="Ex: Saia de Renda Luxo" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Preço (R$)</label>
+                        <input type="number" id="product-price" step="0.01" placeholder="249.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tag</label>
+                        <select id="product-tag">
+                            <option value="">Nenhuma</option>
+                            <option value="new">Novo</option>
+                            <option value="bestseller">Mais Vendido</option>
+                            <option value="custom">Sob Encomenda</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tamanhos Disponíveis</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" value="P" checked> P</label>
+                        <label><input type="checkbox" value="M" checked> M</label>
+                        <label><input type="checkbox" value="G" checked> G</label>
+                        <label><input type="checkbox" value="GG"> GG</label>
+                        <label><input type="checkbox" value="Único"> Tamanho Único</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição (opcional)</label>
+                    <textarea id="product-desc" rows="3" placeholder="Detalhes sobre a peça..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-admin">✓ Salvar Produto</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let products = [];
+
+        // ===== FETCH PRODUCTS FROM SERVER =====
+        async function fetchProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (res.ok && Array.isArray(data)) {
+                    products = data;
+                } else {
+                    const fallbackRes = await fetch('products.json');
+                    const fallbackData = await fallbackRes.json();
+                    products = Array.isArray(fallbackData) ? fallbackData : [];
+                    if (!products.length) {
+                        throw new Error(data && data.error ? data.error : 'Erro ao carregar produtos');
+                    }
+                }
+                render();
+            } catch (err) {
+                products = [];
+                render();
+                showToast('Erro ao carregar produtos!');
+            }
+        }
+
+        // ===== TABS =====
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ===== RENDER =====
+        function render() {
+            const list = document.getElementById('product-list');
+            const tagLabels = { new: 'Novo', bestseller: 'Mais Vendido', custom: 'Sob Encomenda' };
+
+            // Stats
+            document.getElementById('stat-total').textContent = products.length;
+            document.getElementById('stat-pronta').textContent = products.filter(p => p.tag !== 'custom').length;
+            document.getElementById('stat-encomenda').textContent = products.filter(p => p.tag === 'custom').length;
+
+            if (!products.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><p>Nenhum produto cadastrado.<br>Clique em "Adicionar Novo" para começar.</p></div>';
+                return;
+            }
+
+            list.innerHTML = products.map(p => {
+                const imgs = p.images || (p.image ? [p.image] : []);
+                return `
+                <div class="admin-product-item">
+                    <img src="${imgs[0] || ''}" alt="${p.name}">
+                    <div class="admin-product-info">
+                        <h3>${p.name}</h3>
+                        <div class="meta">
+                            <span class="price-tag">R$ ${p.price.toFixed(2).replace('.', ',')}</span>
+                            ${p.tag ? `<span class="product-tag tag-${p.tag}" style="position:static;font-size:.6rem">${tagLabels[p.tag] || p.tag}</span>` : ''}
+                            <span>${(p.sizes || []).join(', ')}</span>
+                            ${imgs.length > 1 ? `<span>${imgs.length} fotos</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="btn-delete" data-id="${p.id}">Remover</button>
+                </div>`;
+            }).join('');
+
+            list.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('Tem certeza que deseja remover este produto?')) {
+                        const id = btn.dataset.id;
+                        fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+                            .then(res => res.json())
+                            .then(() => {
+                                showToast('Produto removido!');
+                                fetchProducts();
+                            })
+                            .catch(() => showToast('Erro ao remover!'));
+                    }
+                });
+            });
+        }
+
+        // ===== IMAGE UPLOAD (3 slots) =====
+        const uploadedImages = ['', '', ''];
+
+        async function compressImageToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxWidth = 1200;
+                        const scale = Math.min(1, maxWidth / img.width);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(img.width * scale);
+                        canvas.height = Math.round(img.height * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.onerror = () => reject(new Error('Imagem inválida'));
+                    img.src = ev.target.result;
+                };
+                reader.onerror = () => reject(new Error('Falha ao ler imagem'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        [1, 2, 3].forEach(slot => {
+            const fileInput = document.getElementById(`product-image-${slot}`);
+            const preview = document.getElementById(`preview-${slot}`);
+            const previewImg = document.getElementById(`preview-img-${slot}`);
+
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) { showToast('Imagem muito grande! Máx. 2MB'); return; }
+
+                try {
+                    const dataUrl = await compressImageToDataUrl(file);
+                    uploadedImages[slot - 1] = dataUrl;
+                    previewImg.src = dataUrl;
+                    preview.classList.add('has-image');
+                } catch (err) {
+                    showToast('Não foi possível processar a imagem');
+                }
+            });
+
+            preview.querySelector('.remove-img').addEventListener('click', () => {
+                uploadedImages[slot - 1] = '';
+                previewImg.src = '';
+                preview.classList.remove('has-image');
+                fileInput.value = '';
+            });
+        });
+
+        // ===== FORM SUBMIT =====
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('product-name').value.trim();
+            const price = parseFloat(document.getElementById('product-price').value);
+            const tag = document.getElementById('product-tag').value;
+            const desc = document.getElementById('product-desc').value.trim();
+            const sizes = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.value);
+
+            if (!name || !price) {
+                showToast('Preencha nome e preço!');
+                return;
+            }
+
+            if (!uploadedImages[0]) {
+                showToast('Adicione a foto principal!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        price,
+                        tag,
+                        desc,
+                        sizes,
+                        images: uploadedImages.filter(Boolean).slice(0, 3)
+                    })
+                });
+
+                if (res.ok) {
+                    // Reset form
+                    e.target.reset();
+                    [1,2,3].forEach(s => {
+                        uploadedImages[s - 1] = '';
+                        document.getElementById(`preview-img-${s}`).src = '';
+                        document.getElementById(`preview-${s}`).classList.remove('has-image');
+                        document.getElementById(`product-image-${s}`).value = '';
+                    });
+
+                    // Buscar produtos atualizados
+                    await fetchProducts();
+
+                    // Switch to products tab
+                    document.querySelector('[data-tab="products"]').click();
+                    showToast('✓ Produto adicionado com sucesso!');
+                } else {
+                    showToast('Erro ao salvar produto!');
+                }
+            } catch (err) {
+                showToast('Erro ao conectar ao servidor!');
+            }
+        });
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        fetchProducts();
+    });
+    </script>
+</body>
+</html>

@@ -5,7 +5,7 @@
 - Framework Preset: Other
 - Root Directory: .
 - Build Command: npm run build
-- Output Directory: vazio
+- Output Directory: public
 - Install Command: npm install
 - Node.js Runtime: 20.x
 
@@ -32,6 +32,7 @@ Variaveis alternativas aceitas pela API:
 - API serverless: /api/products.js
 - Healthcheck: /api/health.js
 - Config Vercel: /vercel.json
+- Build gera a pasta /public com o site estatico
 - Nao depender de escrita local em disco em producao
 
 ## 5. Testes apos deploy

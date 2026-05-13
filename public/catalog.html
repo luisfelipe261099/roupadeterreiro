@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | Roupa de Terreiro</title>
+    <meta name="description" content="Catálogo completo de roupas de terreiro. Peças de alta qualidade, pronta entrega e sob medida.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav id="navbar">
+        <div class="nav-logo">
+            <a href="index.html"><img src="ROUPA DE TERREIRO LOGOTIPO.png" alt="Logo"></a>
+        </div>
+        <button class="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="#catalogo">Catálogo</a>
+            <div class="cart-toggle">
+                <span>Carrinho</span>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="catalog-header">
+        <p>Artesanato Sagrado</p>
+        <h1>Nosso Catálogo</h1>
+    </header>
+
+    <main id="catalogo" class="section">
+        <div class="vitrine-grid" id="catalog-grid">
+            <!-- Products loaded dynamically from Vercel API -->
+        </div>
+    </main>
+
+    <div class="cart-overlay"></div>
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Seu Carrinho</h2>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="cart-total-value">R$ 0,00</span>
+            </div>
+            <button class="checkout-whatsapp btn-magnetic">Finalizar no WhatsApp</button>
+        </div>
+    </div>
+
+    <a href="https://wa.me/seunumeroaqui" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tagMap = { new: 'tag-new', bestseller: 'tag-bestseller', custom: 'tag-custom' };
+        const tagLabel = { new: 'Novo', bestseller: 'Mais Vendido', custom: 'Sob Encomenda' };
+
+        const grid = document.getElementById('catalog-grid');
+        let products = [];
+
+        function initCarousels() {
+            document.querySelectorAll('.product-carousel').forEach(car => {
+                const slides = car.querySelector('.product-carousel-slides');
+                const dots = car.querySelectorAll('.carousel-dot');
+                let idx = 0;
+                const total = dots.length;
+                function goTo(n) {
+                    idx = (n + total) % total;
+                    slides.style.transform = `translateX(-${idx * 100}%)`;
+                    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+                }
+                car.querySelector('.carousel-btn-prev').addEventListener('click', e => { e.stopPropagation(); goTo(idx - 1); });
+                car.querySelector('.carousel-btn-next').addEventListener('click', e => { e.stopPropagation(); goTo(idx + 1); });
+                dots.forEach((d, i) => d.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
+            });
+        }
+
+        function initSizeSelectors() {
+            document.querySelectorAll('.size-selector').forEach(sel => {
+                sel.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        sel.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    });
+                });
+            });
+        }
+
+        function initAddToCart() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.querySelectorAll('.add-to-cart').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const sizeEl = btn.parentElement.querySelector('.size-btn.active');
+                    cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    document.querySelectorAll('.cart-count').forEach(el => el.textContent = cart.length);
+                    const orig = btn.textContent;
+                    btn.textContent = '✓ Adicionado!';
+                    btn.style.background = 'var(--accent)';
+                    btn.style.borderColor = 'var(--accent)';
+                    btn.style.color = '#000';
+                    setTimeout(() => {
+                        btn.textContent = orig;
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }, 1500);
+                });
+            });
+        }
+
+        function initReveal() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+            document.querySelectorAll('.reveal-item').forEach(el => obs.observe(el));
+        }
+
+        function renderProducts() {
+            grid.innerHTML = products.map(p => {
+                const imgs = p.images || (p.image ? [p.image] : []);
+                const firstImg = imgs[0] || '';
+                const multi = imgs.length > 1;
+                return `
+                    <div class="product-card reveal-item">
+                        <div class="product-card-inner">
+                            ${p.tag ? `<span class="product-tag ${tagMap[p.tag] || ''}">${tagLabel[p.tag] || ''}</span>` : ''}
+                            ${multi ? `
+                                <div class="product-carousel" data-index="0">
+                                    <div class="product-carousel-slides">
+                                        ${imgs.map(img => `<div class="product-carousel-slide"><img src="${img}" alt="${p.name}" loading="lazy"></div>`).join('')}
+                                    </div>
+                                    <button class="carousel-btn carousel-btn-prev">&#8249;</button>
+                                    <button class="carousel-btn carousel-btn-next">&#8250;</button>
+                                    <div class="carousel-dots">
+                                        ${imgs.map((_, i) => `<button class="carousel-dot${i === 0 ? ' active' : ''}"></button>`).join('')}
+                                    </div>
+                                </div>
+                            ` : `<img src="${firstImg}" alt="${p.name}" width="400" height="533" loading="lazy">`}
+                        </div>
+                        <div class="product-details">
+                            <h3>${p.name}</h3>
+                            <p class="price">R$ ${p.price.toFixed(2).replace('.', ',')}</p>
+                            ${p.sizes && p.sizes.length && p.sizes[0] !== 'Único' ? `
+                                <div class="size-selector">
+                                    ${p.sizes.map((s, i) => `<button class="size-btn${i === 0 ? ' active' : ''}">${s}</button>`).join('')}
+                                </div>
+                            ` : ''}
+                            <button class="add-to-cart" data-name="${p.name}" data-price="${p.price}" data-image="${firstImg}">Adicionar ao Carrinho</button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            initCarousels();
+            initSizeSelectors();
+            initAddToCart();
+            initReveal();
+        }
+
+        fetch('/api/products')
+            .then(async response => {
+                const data = await response.json();
+                if (response.ok && Array.isArray(data)) {
+                    products = data;
+                    renderProducts();
+                    return;
+                }
+
+                const fallback = await fetch('products.json');
+                const fallbackData = await fallback.json();
+                products = Array.isArray(fallbackData) ? fallbackData : [];
+                renderProducts();
+            })
+            .catch(() => {
+                fetch('products.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        products = Array.isArray(data) ? data : [];
+                        renderProducts();
+                    })
+                    .catch(() => {
+                        grid.innerHTML = '<p style="padding:20px">Erro ao carregar catálogo.</p>';
+                    });
+            });
+    });
+    </script>
+</body>
+</html>
