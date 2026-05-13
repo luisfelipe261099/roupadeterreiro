@@ -4,26 +4,16 @@ const path = require('path');
 const rootDir = process.cwd();
 const outDir = path.join(rootDir, 'public');
 
-const filesToCopy = [
+const staticFiles = [
   'index.html',
   'admin.html',
   'catalog.html',
   'style.css',
   'script.js',
-  'products.json',
-  'hero.jpeg',
-  'out.png',
-  'atelier.png',
-  'lookbook1.png',
-  'lookbook2.png',
-  'product1.png',
-  'product2.png',
-  'product3.png',
-  'product4.png',
-  'product5.png',
-  'product6.png',
-  'ROUPA DE TERREIRO LOGOTIPO.png'
+  'products.json'
 ];
+
+const imageExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.ico']);
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -49,10 +39,19 @@ function copyFile(fileName) {
 removeDir(outDir);
 ensureDir(outDir);
 
-for (const fileName of filesToCopy) {
+for (const fileName of staticFiles) {
   copyFile(fileName);
+}
+
+const rootFiles = fs.readdirSync(rootDir, { withFileTypes: true });
+for (const entry of rootFiles) {
+  if (!entry.isFile()) continue;
+  const ext = path.extname(entry.name).toLowerCase();
+  if (imageExtensions.has(ext)) {
+    copyFile(entry.name);
+  }
 }
 
 ensureDir(path.join(outDir, 'uploads'));
 
-console.log(`Build concluido: ${filesToCopy.length} arquivos preparados em ${outDir}`);
+console.log(`Build concluido: arquivos estaticos e imagens preparados em ${outDir}`);
