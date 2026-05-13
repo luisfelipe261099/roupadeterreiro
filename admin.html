@@ -518,9 +518,21 @@
         async function fetchProducts() {
             try {
                 const res = await fetch('/api/products');
-                products = await res.json();
+                const data = await res.json();
+                if (res.ok && Array.isArray(data)) {
+                    products = data;
+                } else {
+                    const fallbackRes = await fetch('products.json');
+                    const fallbackData = await fallbackRes.json();
+                    products = Array.isArray(fallbackData) ? fallbackData : [];
+                    if (!products.length) {
+                        throw new Error(data && data.error ? data.error : 'Erro ao carregar produtos');
+                    }
+                }
                 render();
             } catch (err) {
+                products = [];
+                render();
                 showToast('Erro ao carregar produtos!');
             }
         }

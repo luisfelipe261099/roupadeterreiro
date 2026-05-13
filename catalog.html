@@ -173,13 +173,29 @@
         }
 
         fetch('/api/products')
-            .then(response => response.json())
-            .then(data => {
-                products = data;
+            .then(async response => {
+                const data = await response.json();
+                if (response.ok && Array.isArray(data)) {
+                    products = data;
+                    renderProducts();
+                    return;
+                }
+
+                const fallback = await fetch('products.json');
+                const fallbackData = await fallback.json();
+                products = Array.isArray(fallbackData) ? fallbackData : [];
                 renderProducts();
             })
             .catch(() => {
-                grid.innerHTML = '<p style="padding:20px">Erro ao carregar catálogo.</p>';
+                fetch('products.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        products = Array.isArray(data) ? data : [];
+                        renderProducts();
+                    })
+                    .catch(() => {
+                        grid.innerHTML = '<p style="padding:20px">Erro ao carregar catálogo.</p>';
+                    });
             });
     });
     </script>

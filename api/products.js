@@ -1,7 +1,10 @@
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 
 let pool;
 let tableReady = false;
+const productsFile = path.join(process.cwd(), 'products.json');
 
 function getDbUrl() {
     return (process.env.DATABASE_URL || process.env.TIDB_DATABASE_URL || process.env.TIDB_URL || '').trim();
@@ -77,19 +80,28 @@ function readBody(req) {
     return req.body;
 }
 
-module.exports = async function handler(req, res) {
+function readLocalProducts() {
     try {
-        if (!getDbUrl()) {
-            return res.status(503).json({
-                error: 'Banco de dados nao configurado',
-                code: 'DB_CONFIG_MISSING',
-                hint: 'Defina DATABASE_URL nas variaveis de ambiente da Vercel com a URL de conexao do TiDB.'
-            });
+        if (!fs.existsSync(productsFile)) {
+            return [];
         }
 
-        await ensureTable();
+        const raw = fs.readFileSync(productsFile, 'utf8');
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
 
+module.exports = async function handler(req, res) {
+    try {
         if (req.method === 'GET') {
+            if (!getDbUrl()) {
+                return res.status(200).json(readLocalProducts());
+            }
+
+            await ensureTable();
             const [rows] = await getPool().query(
                 'SELECT id, name, price, tag, sizes, description, images FROM products ORDER BY created_at DESC'
             );
@@ -97,6 +109,15 @@ module.exports = async function handler(req, res) {
         }
 
         if (req.method === 'POST') {
+            if (!getDbUrl()) {
+                return res.status(503).json({
+                    error: 'Banco de dados nao configurado',
+                    code: 'DB_CONFIG_MISSING',
+                    hint: 'Defina DATABASE_URL nas variaveis de ambiente da Vercel com a URL de conexao do TiDB.'
+                });
+            }
+
+            await ensureTable();
             const body = readBody(req);
             const name = String(body.name || '').trim();
             const price = Number(body.price);
@@ -123,6 +144,15 @@ module.exports = async function handler(req, res) {
         }
 
         if (req.method === 'DELETE') {
+            if (!getDbUrl()) {
+                return res.status(503).json({
+                    error: 'Banco de dados nao configurado',
+                    code: 'DB_CONFIG_MISSING',
+                    hint: 'Defina DATABASE_URL nas variaveis de ambiente da Vercel com a URL de conexao do TiDB.'
+                });
+            }
+
+            await ensureTable();
             const id = Number(req.query && req.query.id);
             if (!id) {
                 return res.status(400).json({ error: 'ID invalido' });
