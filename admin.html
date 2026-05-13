@@ -512,20 +512,17 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // ===== DATA =====
-        const DEFAULT_PRODUCTS = [
-            { id: 1, name: 'Saia de Renda Luxo', price: 389, images: ['product2.png'], tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 2, name: 'Conjunto Masculino Premium', price: 450, images: ['product4.png'], tag: 'new', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 3, name: 'Vestido Ethereal Flow', price: 560, images: ['product6.png'], tag: '', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 4, name: 'Bata em Linho Fino', price: 249, images: ['product1.png'], tag: 'bestseller', sizes: ['P','M','G','GG'], desc: '' },
-            { id: 5, name: 'Ojá Bordado Artesanal', price: 120, images: ['product3.png'], tag: 'custom', sizes: ['Único'], desc: '' },
-            { id: 6, name: 'Guia Sagrada de Cristais', price: 89, images: ['product5.png'], tag: '', sizes: ['Único'], desc: '' },
-        ];
+        let products = [];
 
-        let products = JSON.parse(localStorage.getItem('admin_products'));
-        if (!products) {
-            products = DEFAULT_PRODUCTS;
-            localStorage.setItem('admin_products', JSON.stringify(products));
+        // ===== FETCH PRODUCTS FROM SERVER =====
+        async function fetchProducts() {
+            try {
+                const res = await fetch('/api/products');
+                products = await res.json();
+                render();
+            } catch (err) {
+                showToast('Erro ao carregar produtos!');
+            }
         }
 
         // ===== TABS =====
@@ -574,10 +571,14 @@
             list.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', () => {
                     if (confirm('Tem certeza que deseja remover este produto?')) {
-                        products = products.filter(p => p.id !== +btn.dataset.id);
-                        localStorage.setItem('admin_products', JSON.stringify(products));
-                        render();
-                        showToast('Produto removido!');
+                        const id = btn.dataset.id;
+                        fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+                            .then(res => res.json())
+                            .then(() => {
+                                showToast('Produto removido!');
+                                fetchProducts();
+                            })
+                            .catch(() => showToast('Erro ao remover!'));
                     }
                 });
             });
@@ -586,22 +587,47 @@
         // ===== IMAGE UPLOAD (3 slots) =====
         const uploadedImages = ['', '', ''];
 
+        async function compressImageToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxWidth = 1200;
+                        const scale = Math.min(1, maxWidth / img.width);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(img.width * scale);
+                        canvas.height = Math.round(img.height * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.onerror = () => reject(new Error('Imagem inválida'));
+                    img.src = ev.target.result;
+                };
+                reader.onerror = () => reject(new Error('Falha ao ler imagem'));
+                reader.readAsDataURL(file);
+            });
+        }
+
         [1, 2, 3].forEach(slot => {
             const fileInput = document.getElementById(`product-image-${slot}`);
             const preview = document.getElementById(`preview-${slot}`);
             const previewImg = document.getElementById(`preview-img-${slot}`);
 
-            fileInput.addEventListener('change', (e) => {
+            fileInput.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
                 if (file.size > 2 * 1024 * 1024) { showToast('Imagem muito grande! Máx. 2MB'); return; }
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    uploadedImages[slot - 1] = ev.target.result;
-                    previewImg.src = ev.target.result;
+
+                try {
+                    const dataUrl = await compressImageToDataUrl(file);
+                    uploadedImages[slot - 1] = dataUrl;
+                    previewImg.src = dataUrl;
                     preview.classList.add('has-image');
-                };
-                reader.readAsDataURL(file);
+                } catch (err) {
+                    showToast('Não foi possível processar a imagem');
+                }
             });
 
             preview.querySelector('.remove-img').addEventListener('click', () => {
@@ -613,7 +639,7 @@
         });
 
         // ===== FORM SUBMIT =====
-        document.getElementById('product-form').addEventListener('submit', (e) => {
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const name = document.getElementById('product-name').value.trim();
@@ -626,37 +652,48 @@
                 showToast('Preencha nome e preço!');
                 return;
             }
+
             if (!uploadedImages[0]) {
                 showToast('Adicione a foto principal!');
                 return;
             }
 
-            const newProduct = {
-                id: Date.now(),
-                name,
-                price,
-                images: uploadedImages.filter(Boolean),
-                tag,
-                sizes,
-                desc
-            };
+            try {
+                const res = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        price,
+                        tag,
+                        desc,
+                        sizes,
+                        images: uploadedImages.filter(Boolean).slice(0, 3)
+                    })
+                });
 
-            products.push(newProduct);
-            localStorage.setItem('admin_products', JSON.stringify(products));
+                if (res.ok) {
+                    // Reset form
+                    e.target.reset();
+                    [1,2,3].forEach(s => {
+                        uploadedImages[s - 1] = '';
+                        document.getElementById(`preview-img-${s}`).src = '';
+                        document.getElementById(`preview-${s}`).classList.remove('has-image');
+                        document.getElementById(`product-image-${s}`).value = '';
+                    });
 
-            // Reset form
-            e.target.reset();
-            uploadedImages[0] = ''; uploadedImages[1] = ''; uploadedImages[2] = '';
-            [1,2,3].forEach(s => {
-                document.getElementById(`preview-img-${s}`).src = '';
-                document.getElementById(`preview-${s}`).classList.remove('has-image');
-                document.getElementById(`product-image-${s}`).value = '';
-            });
+                    // Buscar produtos atualizados
+                    await fetchProducts();
 
-            // Switch to products tab
-            document.querySelector('[data-tab="products"]').click();
-            render();
-            showToast('✓ Produto adicionado com sucesso!');
+                    // Switch to products tab
+                    document.querySelector('[data-tab="products"]').click();
+                    showToast('✓ Produto adicionado com sucesso!');
+                } else {
+                    showToast('Erro ao salvar produto!');
+                }
+            } catch (err) {
+                showToast('Erro ao conectar ao servidor!');
+            }
         });
 
         // ===== TOAST =====
@@ -667,7 +704,7 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        render();
+        fetchProducts();
     });
     </script>
 </body>

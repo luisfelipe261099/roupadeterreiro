@@ -35,7 +35,7 @@
 
     <main id="catalogo" class="section">
         <div class="vitrine-grid" id="catalog-grid">
-            <!-- Products loaded dynamically from localStorage -->
+            <!-- Products loaded dynamically from Vercel API -->
         </div>
     </main>
 
@@ -65,96 +65,122 @@
         const tagMap = { new: 'tag-new', bestseller: 'tag-bestseller', custom: 'tag-custom' };
         const tagLabel = { new: 'Novo', bestseller: 'Mais Vendido', custom: 'Sob Encomenda' };
 
-        const defaults = [
-            { id:1, name:'Saia de Renda Luxo', price:389, images:['product2.png'], tag:'bestseller', sizes:['P','M','G','GG'] },
-            { id:2, name:'Conjunto Masculino Premium', price:450, images:['product4.png'], tag:'new', sizes:['P','M','G','GG'] },
-            { id:3, name:'Vestido Ethereal Flow', price:560, images:['product6.png'], tag:'', sizes:['P','M','G','GG'] },
-            { id:4, name:'Bata em Linho Fino', price:249, images:['product1.png'], tag:'bestseller', sizes:['P','M','G','GG'] },
-            { id:5, name:'Ojá Bordado Artesanal', price:120, images:['product3.png'], tag:'custom', sizes:['Único'] },
-            { id:6, name:'Guia Sagrada de Cristais', price:89, images:['product5.png'], tag:'', sizes:['Único'] },
-        ];
-
-        let products = JSON.parse(localStorage.getItem('admin_products')) || defaults;
         const grid = document.getElementById('catalog-grid');
+        let products = [];
 
-        grid.innerHTML = products.map(p => {
-            const imgs = p.images || (p.image ? [p.image] : []);
-            const firstImg = imgs[0] || '';
-            const multi = imgs.length > 1;
-            return `
-            <div class="product-card reveal-item">
-                <div class="product-card-inner">
-                    ${p.tag ? `<span class="product-tag ${tagMap[p.tag] || ''}">${tagLabel[p.tag] || ''}</span>` : ''}
-                    ${multi ? `
-                    <div class="product-carousel" data-index="0">
-                        <div class="product-carousel-slides">
-                            ${imgs.map(img => `<div class="product-carousel-slide"><img src="${img}" alt="${p.name}" loading="lazy"></div>`).join('')}
-                        </div>
-                        <button class="carousel-btn carousel-btn-prev">&#8249;</button>
-                        <button class="carousel-btn carousel-btn-next">&#8250;</button>
-                        <div class="carousel-dots">
-                            ${imgs.map((_,i) => `<button class="carousel-dot${i===0?' active':''}"></button>`).join('')}
-                        </div>
-                    </div>
-                    ` : `<img src="${firstImg}" alt="${p.name}" width="400" height="533" loading="lazy">`}
-                </div>
-                <div class="product-details">
-                    <h3>${p.name}</h3>
-                    <p class="price">R$ ${p.price.toFixed(2).replace('.',',')}</p>
-                    ${p.sizes && p.sizes.length && p.sizes[0] !== 'Único' ? `
-                        <div class="size-selector">
-                            ${p.sizes.map((s,i) => `<button class="size-btn${i===0?' active':''}">${s}</button>`).join('')}
-                        </div>
-                    ` : ''}
-                    <button class="add-to-cart" data-name="${p.name}" data-price="${p.price}" data-image="${firstImg}">Adicionar ao Carrinho</button>
-                </div>
-            </div>`;
-        }).join('');
+        function initCarousels() {
+            document.querySelectorAll('.product-carousel').forEach(car => {
+                const slides = car.querySelector('.product-carousel-slides');
+                const dots = car.querySelectorAll('.carousel-dot');
+                let idx = 0;
+                const total = dots.length;
+                function goTo(n) {
+                    idx = (n + total) % total;
+                    slides.style.transform = `translateX(-${idx * 100}%)`;
+                    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+                }
+                car.querySelector('.carousel-btn-prev').addEventListener('click', e => { e.stopPropagation(); goTo(idx - 1); });
+                car.querySelector('.carousel-btn-next').addEventListener('click', e => { e.stopPropagation(); goTo(idx + 1); });
+                dots.forEach((d, i) => d.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
+            });
+        }
 
-        // Re-init carousels
-        document.querySelectorAll('.product-carousel').forEach(car => {
-            const slides = car.querySelector('.product-carousel-slides');
-            const dots = car.querySelectorAll('.carousel-dot');
-            let idx = 0;
-            const total = dots.length;
-            function goTo(n) {
-                idx = (n + total) % total;
-                slides.style.transform = `translateX(-${idx * 100}%)`;
-                dots.forEach((d,i) => d.classList.toggle('active', i === idx));
-            }
-            car.querySelector('.carousel-btn-prev').addEventListener('click', e => { e.stopPropagation(); goTo(idx - 1); });
-            car.querySelector('.carousel-btn-next').addEventListener('click', e => { e.stopPropagation(); goTo(idx + 1); });
-            dots.forEach((d,i) => d.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
-        });
-
-        // Re-init size selectors
-        document.querySelectorAll('.size-selector').forEach(sel => {            sel.querySelectorAll('.size-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    sel.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+        function initSizeSelectors() {
+            document.querySelectorAll('.size-selector').forEach(sel => {
+                sel.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        sel.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    });
                 });
             });
-        });
+        }
 
-        // Re-init add to cart
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        document.querySelectorAll('.add-to-cart').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const sizeEl = btn.parentElement.querySelector('.size-btn.active');
-                cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
-                localStorage.setItem('cart', JSON.stringify(cart));
-                document.querySelectorAll('.cart-count').forEach(el => el.textContent = cart.length);
-                const orig = btn.textContent;
-                btn.textContent = '✓ Adicionado!'; btn.style.background='var(--accent)'; btn.style.borderColor='var(--accent)'; btn.style.color='#000';
-                setTimeout(() => { btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 1500);
+        function initAddToCart() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.querySelectorAll('.add-to-cart').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const sizeEl = btn.parentElement.querySelector('.size-btn.active');
+                    cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    document.querySelectorAll('.cart-count').forEach(el => el.textContent = cart.length);
+                    const orig = btn.textContent;
+                    btn.textContent = '✓ Adicionado!';
+                    btn.style.background = 'var(--accent)';
+                    btn.style.borderColor = 'var(--accent)';
+                    btn.style.color = '#000';
+                    setTimeout(() => {
+                        btn.textContent = orig;
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }, 1500);
+                });
             });
-        });
+        }
 
-        // Reveal animation
-        const obs = new IntersectionObserver(entries => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
-        }, { threshold: 0.05 });
-        document.querySelectorAll('.reveal-item').forEach(el => obs.observe(el));
+        function initReveal() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+            document.querySelectorAll('.reveal-item').forEach(el => obs.observe(el));
+        }
+
+        function renderProducts() {
+            grid.innerHTML = products.map(p => {
+                const imgs = p.images || (p.image ? [p.image] : []);
+                const firstImg = imgs[0] || '';
+                const multi = imgs.length > 1;
+                return `
+                    <div class="product-card reveal-item">
+                        <div class="product-card-inner">
+                            ${p.tag ? `<span class="product-tag ${tagMap[p.tag] || ''}">${tagLabel[p.tag] || ''}</span>` : ''}
+                            ${multi ? `
+                                <div class="product-carousel" data-index="0">
+                                    <div class="product-carousel-slides">
+                                        ${imgs.map(img => `<div class="product-carousel-slide"><img src="${img}" alt="${p.name}" loading="lazy"></div>`).join('')}
+                                    </div>
+                                    <button class="carousel-btn carousel-btn-prev">&#8249;</button>
+                                    <button class="carousel-btn carousel-btn-next">&#8250;</button>
+                                    <div class="carousel-dots">
+                                        ${imgs.map((_, i) => `<button class="carousel-dot${i === 0 ? ' active' : ''}"></button>`).join('')}
+                                    </div>
+                                </div>
+                            ` : `<img src="${firstImg}" alt="${p.name}" width="400" height="533" loading="lazy">`}
+                        </div>
+                        <div class="product-details">
+                            <h3>${p.name}</h3>
+                            <p class="price">R$ ${p.price.toFixed(2).replace('.', ',')}</p>
+                            ${p.sizes && p.sizes.length && p.sizes[0] !== 'Único' ? `
+                                <div class="size-selector">
+                                    ${p.sizes.map((s, i) => `<button class="size-btn${i === 0 ? ' active' : ''}">${s}</button>`).join('')}
+                                </div>
+                            ` : ''}
+                            <button class="add-to-cart" data-name="${p.name}" data-price="${p.price}" data-image="${firstImg}">Adicionar ao Carrinho</button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            initCarousels();
+            initSizeSelectors();
+            initAddToCart();
+            initReveal();
+        }
+
+        fetch('/api/products')
+            .then(response => response.json())
+            .then(data => {
+                products = data;
+                renderProducts();
+            })
+            .catch(() => {
+                grid.innerHTML = '<p style="padding:20px">Erro ao carregar catálogo.</p>';
+            });
     });
     </script>
 </body>

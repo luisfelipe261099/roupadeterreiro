@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "name": "Saia de Renda Luxo",
+        "price": 389,
+        "images": ["product2.png"],
+        "tag": "bestseller",
+        "sizes": ["P", "M", "G", "GG"],
+        "desc": ""
+    },
+    {
+        "id": 2,
+        "name": "Conjunto Masculino Premium",
+        "price": 450,
+        "images": ["product4.png"],
+        "tag": "new",
+        "sizes": ["P", "M", "G", "GG"],
+        "desc": ""
+    },
+    {
+        "id": 3,
+        "name": "Vestido Ethereal Flow",
+        "price": 560,
+        "images": ["product6.png"],
+        "tag": "",
+        "sizes": ["P", "M", "G", "GG"],
+        "desc": ""
+    }
+]
