@@ -702,7 +702,12 @@
                     showToast('✓ Produto adicionado com sucesso!');
                 } else {
                     const errorData = await res.json().catch(() => ({}));
-                    showToast(errorData.hint || errorData.error || 'Erro ao salvar produto!');
+                    let msg = '';
+                    if (errorData.error) msg += errorData.error + '\n';
+                    if (errorData.code) msg += 'Código: ' + errorData.code + '\n';
+                    if (errorData.hint) msg += 'Dica: ' + errorData.hint + '\n';
+                    if (errorData.details) msg += 'Detalhes: ' + errorData.details.split('\n')[0] + '\n';
+                    showToast(msg.trim() || 'Erro ao salvar produto!');
                 }
             } catch (err) {
                 showToast('Erro ao conectar ao servidor!');
