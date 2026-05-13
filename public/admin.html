@@ -302,6 +302,45 @@
             background: #ff4444;
             color: #fff;
         }
+        .btn-edit {
+            background: rgba(212,175,55,.1);
+            border: 1px solid rgba(212,175,55,.35);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: .7rem;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all .3s;
+            flex-shrink: 0;
+        }
+        .btn-edit:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .form-actions .btn-admin {
+            margin-top: 0;
+        }
+        .btn-admin.btn-secondary {
+            background: rgba(255,255,255,.08);
+            color: var(--secondary);
+            border: 1px solid rgba(255,255,255,.15);
+        }
+        .btn-admin.btn-secondary:hover {
+            background: rgba(255,255,255,.16);
+        }
 
         .empty-state {
             text-align: center;
@@ -473,8 +512,8 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Preço (R$)</label>
-                        <input type="number" id="product-price" step="0.01" placeholder="249.00" required>
+                        <label>Preço (R$) <small style="font-size:.65rem;opacity:.7;text-transform:none;letter-spacing:0">(opcional)</small></label>
+                        <input type="number" id="product-price" step="0.01" placeholder="249.00">
                     </div>
                     <div class="form-group">
                         <label>Tag</label>
@@ -503,7 +542,10 @@
                     <textarea id="product-desc" rows="3" placeholder="Detalhes sobre a peça..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-admin">✓ Salvar Produto</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-admin" id="submit-btn">✓ Salvar Produto</button>
+                    <button type="button" class="btn-admin btn-secondary" id="cancel-edit" style="display:none">Cancelar Edição</button>
+                </div>
             </form>
         </div>
     </div>
@@ -513,6 +555,73 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         let products = [];
+        let editingId = null;
+        const uploadedImages = ['', '', ''];
+
+        const form = document.getElementById('product-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit');
+
+        function formatPriceLabel(price) {
+            const parsed = Number(price);
+            if (price === null || price === undefined || Number.isNaN(parsed)) {
+                return 'Sem preco';
+            }
+            return `R$ ${parsed.toFixed(2).replace('.', ',')}`;
+        }
+
+        function clearImageSlot(slot) {
+            uploadedImages[slot - 1] = '';
+            document.getElementById(`preview-img-${slot}`).src = '';
+            document.getElementById(`preview-${slot}`).classList.remove('has-image');
+            document.getElementById(`product-image-${slot}`).value = '';
+        }
+
+        function setImageSlot(slot, value) {
+            uploadedImages[slot - 1] = value || '';
+            document.getElementById(`preview-img-${slot}`).src = value || '';
+            document.getElementById(`preview-${slot}`).classList.toggle('has-image', !!value);
+            document.getElementById(`product-image-${slot}`).value = '';
+        }
+
+        function resetFormState() {
+            editingId = null;
+            form.reset();
+            [1, 2, 3].forEach(clearImageSlot);
+            submitBtn.textContent = '✓ Salvar Produto';
+            cancelEditBtn.style.display = 'none';
+            document.querySelectorAll('.checkbox-group input').forEach(input => {
+                input.checked = ['P', 'M', 'G'].includes(input.value);
+            });
+        }
+
+        function openAddTab() {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="add"]').classList.add('active');
+            document.getElementById('tab-add').classList.add('active');
+        }
+
+        function startEditProduct(product) {
+            editingId = Number(product.id);
+            document.getElementById('product-name').value = product.name || '';
+            document.getElementById('product-price').value = product.price === null || product.price === undefined ? '' : Number(product.price);
+            document.getElementById('product-tag').value = product.tag || '';
+            document.getElementById('product-desc').value = product.desc || '';
+
+            const selectedSizes = new Set(Array.isArray(product.sizes) ? product.sizes : []);
+            document.querySelectorAll('.checkbox-group input').forEach(input => {
+                input.checked = selectedSizes.has(input.value);
+            });
+
+            const imgs = Array.isArray(product.images) ? product.images : [];
+            [1, 2, 3].forEach(slot => setImageSlot(slot, imgs[slot - 1] || ''));
+
+            submitBtn.textContent = '✓ Atualizar Produto';
+            cancelEditBtn.style.display = 'inline-block';
+            openAddTab();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         // ===== FETCH PRODUCTS FROM SERVER =====
         async function fetchProducts() {
@@ -570,15 +679,28 @@
                     <div class="admin-product-info">
                         <h3>${p.name}</h3>
                         <div class="meta">
-                            <span class="price-tag">R$ ${p.price.toFixed(2).replace('.', ',')}</span>
+                            <span class="price-tag">${formatPriceLabel(p.price)}</span>
                             ${p.tag ? `<span class="product-tag tag-${p.tag}" style="position:static;font-size:.6rem">${tagLabels[p.tag] || p.tag}</span>` : ''}
                             <span>${(p.sizes || []).join(', ')}</span>
                             ${imgs.length > 1 ? `<span>${imgs.length} fotos</span>` : ''}
                         </div>
                     </div>
-                    <button class="btn-delete" data-id="${p.id}">Remover</button>
+                    <div class="admin-actions">
+                        <button class="btn-edit" data-id="${p.id}">Editar</button>
+                        <button class="btn-delete" data-id="${p.id}">Remover</button>
+                    </div>
                 </div>`;
             }).join('');
+
+            list.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = Number(btn.dataset.id);
+                    const product = products.find(item => Number(item.id) === id);
+                    if (product) {
+                        startEditProduct(product);
+                    }
+                });
+            });
 
             list.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -597,8 +719,6 @@
         }
 
         // ===== IMAGE UPLOAD (3 slots) =====
-        const uploadedImages = ['', '', ''];
-
         async function compressImageToDataUrl(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -643,25 +763,33 @@
             });
 
             preview.querySelector('.remove-img').addEventListener('click', () => {
-                uploadedImages[slot - 1] = '';
-                previewImg.src = '';
-                preview.classList.remove('has-image');
-                fileInput.value = '';
+                clearImageSlot(slot);
             });
         });
 
+        cancelEditBtn.addEventListener('click', () => {
+            resetFormState();
+            showToast('Edicao cancelada.');
+        });
+
         // ===== FORM SUBMIT =====
-        document.getElementById('product-form').addEventListener('submit', async (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const name = document.getElementById('product-name').value.trim();
-            const price = parseFloat(document.getElementById('product-price').value);
+            const priceRaw = document.getElementById('product-price').value;
+            const price = priceRaw === '' ? null : parseFloat(priceRaw);
             const tag = document.getElementById('product-tag').value;
             const desc = document.getElementById('product-desc').value.trim();
             const sizes = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.value);
 
-            if (!name || !price) {
-                showToast('Preencha nome e preço!');
+            if (!name) {
+                showToast('Preencha o nome do produto!');
+                return;
+            }
+
+            if (priceRaw !== '' && !Number.isFinite(price)) {
+                showToast('Preco invalido!');
                 return;
             }
 
@@ -671,10 +799,12 @@
             }
 
             try {
+                const method = editingId ? 'PUT' : 'POST';
                 const res = await fetch('/api/products', {
-                    method: 'POST',
+                    method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        id: editingId,
                         name,
                         price,
                         tag,
@@ -685,21 +815,12 @@
                 });
 
                 if (res.ok) {
-                    // Reset form
-                    e.target.reset();
-                    [1,2,3].forEach(s => {
-                        uploadedImages[s - 1] = '';
-                        document.getElementById(`preview-img-${s}`).src = '';
-                        document.getElementById(`preview-${s}`).classList.remove('has-image');
-                        document.getElementById(`product-image-${s}`).value = '';
-                    });
+                    const wasEditing = !!editingId;
+                    resetFormState();
 
-                    // Buscar produtos atualizados
                     await fetchProducts();
-
-                    // Switch to products tab
                     document.querySelector('[data-tab="products"]').click();
-                    showToast('✓ Produto adicionado com sucesso!');
+                    showToast(wasEditing ? '✓ Produto atualizado com sucesso!' : '✓ Produto adicionado com sucesso!');
                 } else {
                     const errorData = await res.json().catch(() => ({}));
                     let msg = '';

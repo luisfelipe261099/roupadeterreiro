@@ -91,41 +91,8 @@
                 <a href="catalog.html" class="btn-outline-sm">Ver Catálogo Completo →</a>
             </div>
 
-            <div class="vitrine-grid">
-                <div class="product-card">
-                    <div class="product-card-inner">
-                        <span class="product-tag tag-bestseller">Mais Vendido</span>
-                        <img src="product1.png" alt="Bata em Linho" width="400" height="533" loading="lazy">
-                    </div>
-                    <div class="product-details">
-                        <h3>Bata em Linho</h3>
-                        <p class="price">R$ 249,00</p>
-                        <button class="add-to-cart" data-name="Bata em Linho" data-price="249.00" data-image="product1.png">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-inner">
-                        <span class="product-tag tag-new">Novo</span>
-                        <img src="product2.png" alt="Saia de Renda" width="400" height="533" loading="lazy">
-                    </div>
-                    <div class="product-details">
-                        <h3>Saia de Renda Luxo</h3>
-                        <p class="price">R$ 389,00</p>
-                        <button class="add-to-cart" data-name="Saia de Renda Luxo" data-price="389.00" data-image="product2.png">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-inner">
-                        <img src="product3.png" alt="Ojá Bordado" width="400" height="533" loading="lazy">
-                    </div>
-                    <div class="product-details">
-                        <h3>Ojá Bordado Manual</h3>
-                        <p class="price">R$ 120,00</p>
-                        <button class="add-to-cart" data-name="Ojá Bordado Manual" data-price="120.00" data-image="product3.png">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
+            <div class="vitrine-grid" id="vitrine-grid">
+                <p style="padding:20px;color:var(--text-muted)">Carregando produtos...</p>
             </div>
         </section>
 
@@ -140,25 +107,25 @@
             </div>
             <div class="bento-grid">
                 <div class="bento-item bento-tall">
-                    <img src="lookbook1.png" alt="Editorial - Floresta Sagrada" loading="lazy">
+                    <img src="1.jpeg" alt="Editorial - Floresta Sagrada" loading="lazy">
                     <div class="bento-overlay">
                         <span class="bento-tag">Coleção 2026</span>
-                        <h3>Floresta Sagrada</h3>
-                        <p>Renda artesanal em meio à natureza</p>
+                        <h3>Chama Sagrada</h3>
+                        <p>A delicadeza do feminino em cada detalhe</p>
                     </div>
                 </div>
                 <div class="bento-item bento-square">
-                    <img src="product2.png" alt="Saia de Renda" loading="lazy">
+                    <img src="2.jpeg" alt="Saia de Renda" loading="lazy">
                     <div class="bento-overlay">
                         <h3>Detalhes</h3>
                         <p>Acabamento premium em cada peça</p>
                     </div>
                 </div>
                 <div class="bento-item bento-square">
-                    <img src="product4.png" alt="Conjunto Masculino" loading="lazy">
+                    <img src="3.jpeg" alt="Conjunto Masculino" loading="lazy">
                     <div class="bento-overlay">
                         <h3>Masculino</h3>
-                        <p>Elegância e tradição</p>
+                        <p>Historia e fé</p>
                     </div>
                 </div>
                 <div class="bento-item bento-wide">
@@ -170,7 +137,7 @@
                     </div>
                 </div>
                 <div class="bento-item bento-tall">
-                    <img src="hero.jpeg" alt="Vestido Ritual" loading="lazy">
+                    <img src="4.jpeg" alt="Vestido Ritual" loading="lazy">
                     <div class="bento-overlay">
                         <span class="bento-tag">Destaque</span>
                         <h3>Ritual</h3>
@@ -178,7 +145,7 @@
                     </div>
                 </div>
                 <div class="bento-item bento-square">
-                    <img src="product6.png" alt="Ethereal" loading="lazy">
+                    <img src="5.jpeg" alt="Ethereal" loading="lazy">
                     <div class="bento-overlay">
                         <h3>Ethereal</h3>
                         <p>Leveza e movimento</p>
@@ -425,5 +392,65 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tagMap = { new: 'tag-new', bestseller: 'tag-bestseller', custom: 'tag-custom' };
+        const tagLabel = { new: 'Novo', bestseller: 'Mais Vendido', custom: 'Sob Encomenda' };
+        const vitrineGrid = document.getElementById('vitrine-grid');
+
+        function renderVitrine(items) {
+            if (!vitrineGrid) return;
+
+            if (!items.length) {
+                vitrineGrid.innerHTML = '<p style="padding:20px;color:var(--text-muted)">Nenhum produto disponível no momento.</p>';
+                return;
+            }
+
+            vitrineGrid.innerHTML = items.slice(0, 3).map((p) => {
+                const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+                const firstImg = imgs[0] || 'out.png';
+                const hasPrice = p.price !== null && p.price !== undefined && Number.isFinite(Number(p.price));
+                const formattedPrice = hasPrice ? `R$ ${Number(p.price).toFixed(2).replace('.', ',')}` : 'Preço sob consulta';
+                const buttonHtml = hasPrice
+                    ? `<button class="add-to-cart" data-name="${p.name}" data-price="${Number(p.price)}" data-image="${firstImg}">Adicionar ao Carrinho</button>`
+                    : `<a class="btn-outline-sm" href="https://wa.me/seunumeroaqui" target="_blank" rel="noopener noreferrer">Consultar Preço</a>`;
+
+                return `
+                <div class="product-card">
+                    <div class="product-card-inner">
+                        ${p.tag ? `<span class="product-tag ${tagMap[p.tag] || ''}">${tagLabel[p.tag] || ''}</span>` : ''}
+                        <img src="${firstImg}" alt="${p.name || 'Produto'}" width="400" height="533" loading="lazy">
+                    </div>
+                    <div class="product-details">
+                        <h3>${p.name || 'Produto'}</h3>
+                        <p class="price">${formattedPrice}</p>
+                        ${buttonHtml}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function loadVitrine() {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (res.ok && Array.isArray(data)) {
+                    renderVitrine(data);
+                    return;
+                }
+            } catch {}
+
+            try {
+                const fallback = await fetch('products.json');
+                const fallbackData = await fallback.json();
+                renderVitrine(Array.isArray(fallbackData) ? fallbackData : []);
+            } catch {
+                renderVitrine([]);
+            }
+        }
+
+        loadVitrine();
+    });
+    </script>
 </body>
 </html>

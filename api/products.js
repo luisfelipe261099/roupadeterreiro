@@ -45,7 +45,7 @@ async function ensureTable() {
         CREATE TABLE IF NOT EXISTS products (
             id BIGINT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
-            price DECIMAL(10,2) NOT NULL,
+            price DECIMAL(10,2) NULL,
             tag VARCHAR(50) DEFAULT '',
             sizes LONGTEXT NOT NULL,
             description TEXT,
@@ -53,6 +53,13 @@ async function ensureTable() {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `);
+
+    // Keep old deployments compatible by allowing nullable price.
+    try {
+        await conn.query('ALTER TABLE products MODIFY COLUMN price DECIMAL(10,2) NULL');
+    } catch {
+        // Ignore migration errors and keep the API available.
+    }
     tableReady = true;
 }
 
@@ -60,12 +67,21 @@ function normalizeRows(rows) {
     return rows.map((r) => ({
         id: Number(r.id),
         name: r.name,
-        price: Number(r.price),
+        price: r.price === null || r.price === undefined ? null : Number(r.price),
         tag: r.tag || '',
         sizes: typeof r.sizes === 'string' ? JSON.parse(r.sizes) : (r.sizes || []),
         desc: r.description || '',
         images: typeof r.images === 'string' ? JSON.parse(r.images) : (r.images || []),
     }));
+}
+
+function parseOptionalPrice(value) {
+    if (value === '' || value === null || value === undefined) {
+        return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : NaN;
 }
 
 function readBody(req) {
@@ -120,14 +136,17 @@ module.exports = async function handler(req, res) {
             await ensureTable();
             const body = readBody(req);
             const name = String(body.name || '').trim();
-            const price = Number(body.price);
+            const price = parseOptionalPrice(body.price);
             const tag = String(body.tag || '');
             const desc = String(body.desc || '');
             const sizes = Array.isArray(body.sizes) ? body.sizes : [];
             const images = Array.isArray(body.images) ? body.images.slice(0, 3) : [];
 
-            if (!name || !Number.isFinite(price)) {
-                return res.status(400).json({ error: 'Nome e preco sao obrigatorios' });
+            if (!name) {
+                return res.status(400).json({ error: 'Nome e obrigatorio' });
+            }
+            if (Number.isNaN(price)) {
+                return res.status(400).json({ error: 'Preco invalido' });
             }
             if (!images.length) {
                 return res.status(400).json({ error: 'Adicione pelo menos 1 imagem' });
@@ -141,6 +160,48 @@ module.exports = async function handler(req, res) {
             );
 
             return res.status(201).json({ success: true, id });
+        }
+
+        if (req.method === 'PUT') {
+            if (!getDbUrl()) {
+                return res.status(503).json({
+                    error: 'Banco de dados nao configurado',
+                    code: 'DB_CONFIG_MISSING',
+                    hint: 'Defina DATABASE_URL nas variaveis de ambiente da Vercel com a URL de conexao do TiDB.'
+                });
+            }
+
+            await ensureTable();
+            const body = readBody(req);
+            const id = Number(body.id);
+            const name = String(body.name || '').trim();
+            const price = parseOptionalPrice(body.price);
+            const tag = String(body.tag || '');
+            const desc = String(body.desc || '');
+            const sizes = Array.isArray(body.sizes) ? body.sizes : [];
+            const images = Array.isArray(body.images) ? body.images.slice(0, 3) : [];
+
+            if (!id) {
+                return res.status(400).json({ error: 'ID invalido' });
+            }
+            if (!name) {
+                return res.status(400).json({ error: 'Nome e obrigatorio' });
+            }
+            if (Number.isNaN(price)) {
+                return res.status(400).json({ error: 'Preco invalido' });
+            }
+            if (!images.length) {
+                return res.status(400).json({ error: 'Adicione pelo menos 1 imagem' });
+            }
+
+            await getPool().query(
+                `UPDATE products
+                 SET name = ?, price = ?, tag = ?, sizes = ?, description = ?, images = ?
+                 WHERE id = ?`,
+                [name, price, tag, JSON.stringify(sizes), desc, JSON.stringify(images), id]
+            );
+
+            return res.status(200).json({ success: true, id });
         }
 
         if (req.method === 'DELETE') {

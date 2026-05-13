@@ -153,16 +153,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const sizeEl = btn.parentElement.querySelector('.size-btn.active');
-            cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            const orig = btn.textContent;
-            btn.textContent = '✓ Adicionado!'; btn.style.background='var(--accent)'; btn.style.borderColor='var(--accent)'; btn.style.color='#000';
-            setTimeout(() => { btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 1500);
-        });
+    document.addEventListener('click', (event) => {
+        const btn = event.target.closest('.add-to-cart');
+        if (!btn || !btn.dataset || btn.tagName !== 'BUTTON') return;
+
+        const price = parseFloat(btn.dataset.price);
+        if (!Number.isFinite(price)) return;
+
+        const sizeEl = btn.parentElement.querySelector('.size-btn.active');
+        cart.push({ name: btn.dataset.name, price, image: btn.dataset.image, size: sizeEl ? sizeEl.textContent : null });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartUI();
+        const orig = btn.textContent;
+        btn.textContent = '✓ Adicionado!'; btn.style.background='var(--accent)'; btn.style.borderColor='var(--accent)'; btn.style.color='#000';
+        setTimeout(() => { btn.textContent=orig; btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 1500);
     });
 
     const checkoutBtn = document.querySelector('.checkout-whatsapp');

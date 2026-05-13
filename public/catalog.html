@@ -136,6 +136,8 @@
                 const imgs = p.images || (p.image ? [p.image] : []);
                 const firstImg = imgs[0] || '';
                 const multi = imgs.length > 1;
+                const hasPrice = p.price !== null && p.price !== undefined && Number.isFinite(Number(p.price));
+                const formattedPrice = hasPrice ? `R$ ${Number(p.price).toFixed(2).replace('.', ',')}` : 'Preço sob consulta';
                 return `
                     <div class="product-card reveal-item">
                         <div class="product-card-inner">
@@ -155,13 +157,15 @@
                         </div>
                         <div class="product-details">
                             <h3>${p.name}</h3>
-                            <p class="price">R$ ${p.price.toFixed(2).replace('.', ',')}</p>
+                            <p class="price">${formattedPrice}</p>
                             ${p.sizes && p.sizes.length && p.sizes[0] !== 'Único' ? `
                                 <div class="size-selector">
                                     ${p.sizes.map((s, i) => `<button class="size-btn${i === 0 ? ' active' : ''}">${s}</button>`).join('')}
                                 </div>
                             ` : ''}
-                            <button class="add-to-cart" data-name="${p.name}" data-price="${p.price}" data-image="${firstImg}">Adicionar ao Carrinho</button>
+                            ${hasPrice
+                                ? `<button class="add-to-cart" data-name="${p.name}" data-price="${Number(p.price)}" data-image="${firstImg}">Adicionar ao Carrinho</button>`
+                                : `<a class="btn-outline-sm" href="https://wa.me/seunumeroaqui" target="_blank" rel="noopener noreferrer">Consultar Preço</a>`}
                         </div>
                     </div>`;
             }).join('');
