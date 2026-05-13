@@ -701,7 +701,8 @@
                     document.querySelector('[data-tab="products"]').click();
                     showToast('✓ Produto adicionado com sucesso!');
                 } else {
-                    showToast('Erro ao salvar produto!');
+                    const errorData = await res.json().catch(() => ({}));
+                    showToast(errorData.hint || errorData.error || 'Erro ao salvar produto!');
                 }
             } catch (err) {
                 showToast('Erro ao conectar ao servidor!');

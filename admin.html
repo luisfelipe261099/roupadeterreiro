@@ -701,7 +701,13 @@
                     document.querySelector('[data-tab="products"]').click();
                     showToast('✓ Produto adicionado com sucesso!');
                 } else {
-                    showToast('Erro ao salvar produto!');
+                    const errorData = await res.json().catch(() => ({}));
+                    let msg = '';
+                    if (errorData.error) msg += errorData.error + '\n';
+                    if (errorData.code) msg += 'Código: ' + errorData.code + '\n';
+                    if (errorData.hint) msg += 'Dica: ' + errorData.hint + '\n';
+                    if (errorData.details) msg += 'Detalhes: ' + errorData.details.split('\n')[0] + '\n';
+                    showToast(msg.trim() || 'Erro ao salvar produto!');
                 }
             } catch (err) {
                 showToast('Erro ao conectar ao servidor!');

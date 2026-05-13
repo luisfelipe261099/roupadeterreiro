@@ -47,9 +47,9 @@ async function ensureTable() {
             name VARCHAR(255) NOT NULL,
             price DECIMAL(10,2) NOT NULL,
             tag VARCHAR(50) DEFAULT '',
-            sizes JSON NOT NULL,
+            sizes LONGTEXT NOT NULL,
             description TEXT,
-            images JSON NOT NULL,
+            images LONGTEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `);
@@ -136,7 +136,7 @@ module.exports = async function handler(req, res) {
             const id = Date.now();
             await getPool().query(
                 `INSERT INTO products (id, name, price, tag, sizes, description, images)
-                 VALUES (?, ?, ?, ?, CAST(? AS JSON), ?, CAST(? AS JSON))`,
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [id, name, price, tag, JSON.stringify(sizes), desc, JSON.stringify(images)]
             );
 
@@ -167,13 +167,15 @@ module.exports = async function handler(req, res) {
         const message = (error && error.message) ? error.message : 'Erro interno';
         const code = error && error.code ? error.code : 'INTERNAL_ERROR';
         const isConfigError = code === 'DB_CONFIG_MISSING';
+        const stack = error && error.stack ? error.stack : undefined;
 
         return res.status(isConfigError ? 503 : 500).json({
             error: isConfigError ? 'Banco de dados nao configurado' : message,
             code,
             hint: isConfigError
                 ? 'Configure DATABASE_URL na Vercel usando as credenciais do TiDB Cloud.'
-                : 'Verifique conectividade com o TiDB e tente novamente.'
+                : 'Verifique conectividade com o TiDB e tente novamente.',
+            details: stack
         });
     }
 };
